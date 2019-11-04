@@ -9,4 +9,5 @@
     <color name="lightGrey">#E5E5E5</color>
     <color name="black">#000000</color>
     <color name="text_white">#fff</color>
+    <color name="colorAccent">#D81B60</color>
 </resources>
