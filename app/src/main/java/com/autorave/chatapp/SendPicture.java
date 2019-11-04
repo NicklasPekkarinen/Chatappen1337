@@ -10,7 +10,7 @@ public class SendPicture extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_picture);
-        System.out.println("Hello");
+        System.out.println("Hello1");
 
     }
 }
