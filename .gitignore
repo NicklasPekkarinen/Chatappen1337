@@ -1,0 +1,24 @@
+# Built application files
+/*/build/
+
+# Crashlytics configuration
+com_crashlytics_export_string.xml
+
+# Local configuration files (sdk path, etc)
+local.properties
+
+# Signing files
+.signing/
+
+# User-specific configuration
+.idea
+*.iml
+
+# OS-specific files
+.DS-Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
