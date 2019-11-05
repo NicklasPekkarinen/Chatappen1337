@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">Chat App</string>
+    <string name="app_name">ChatApp</string>
+
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="sign_up_click_hear">Sign up? Click here</string>
+    <string name="back_to_login_page">Back to login? Click here</string>
+    <string name="sign_up">Sign up</string>
 </resources>
