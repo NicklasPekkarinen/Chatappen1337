@@ -31,6 +31,7 @@ public class SignUpActivity extends AppCompatActivity {
     public void signUp(View view) {
         String email = emailID.getText().toString();
         String pwd = passWord.getText().toString();
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
         if(email.isEmpty()){
             emailID.setError("Please enter your email");
@@ -41,7 +42,7 @@ public class SignUpActivity extends AppCompatActivity {
             passWord.requestFocus();
         }
         else if(!(email.isEmpty() && pwd.isEmpty())){
-            mFirebaseAuth.createUserWithEmailAndPassword(email,pwd).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            mFirebaseAuth.createUserWithEmailAndPassword(email,pwd).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(!task.isSuccessful()){
@@ -49,9 +50,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                     }
                     else{
-                        Toast.makeText(SignUpActivity.this,"Account created",Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(SignUpActivity.this,MainActivity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(SignUpActivity.this,MainActivity.class));
 
                     }
                 }
@@ -61,7 +60,6 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(SignUpActivity.this,"Error occurred",Toast.LENGTH_SHORT).show();
 
         }
-
 
     }
     public void backToLogin(View view){
