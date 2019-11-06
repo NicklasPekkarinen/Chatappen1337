@@ -7,15 +7,15 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/profile_image"
+        android:id="@+id/user_chats_image"
         android:src="@mipmap/ic_launcher"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="username"
-        android:id="@+id/username"
-        android:layout_toEndOf="@id/profile_image"
+        android:id="@+id/chats_username"
+        android:layout_toEndOf="@id/user_chats_image"
         android:layout_marginLeft="10dp"
         android:textSize="18sp"
         android:textStyle="bold"/>
@@ -23,10 +23,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/message"
-        android:layout_toEndOf="@id/profile_image"
+        android:id="@+id/chats_last_message"
+        android:layout_toEndOf="@id/user_chats_image"
         android:layout_marginLeft="10dp"
-        android:layout_below="@id/username"
-        android:text="message"/>
+        android:layout_below="@id/chats_username"
+        android:text="lastMessage"/>
 
 </RelativeLayout>
