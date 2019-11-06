@@ -35,6 +35,14 @@
         android:textColor="@color/text_white"
         android:layout_below="@id/edit_email"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/forgot_your_password_press_here"
+        android:layout_below="@id/edit_password"
+        android:textColor="@color/text_white"
+        android:onClick="forgotPassword"/>
+
     <Button
         android:id="@+id/button_login"
         android:layout_width="204dp"
@@ -45,6 +53,7 @@
         android:background="@color/colorPrimary"
         android:text="@string/login"
         android:onClick="loginProses"/>
+
     <TextView
         android:id="@+id/text_signUp"
         android:layout_width="wrap_content"
