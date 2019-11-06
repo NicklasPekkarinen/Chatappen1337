@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:clipChildren="false"
+    android:id="@+id/topPanel"
     >
 
     <com.google.android.material.appbar.AppBarLayout
@@ -80,8 +81,9 @@
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="0dp"
-        android:translationZ="0dp">
-    </FrameLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topPanel"
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
