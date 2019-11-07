@@ -98,4 +98,9 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this,ForgotPasswordActivity.class);
         startActivity(intent);
     }
+
+    public void goToChat(View view) {
+        Intent intent = new Intent(this, chatPage.class);
+        startActivity(intent);
+    }
 }
