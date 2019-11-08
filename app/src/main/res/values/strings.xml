@@ -8,6 +8,8 @@
     <string name="back_to_login_page">Back to login? Click here</string>
     <string name="sign_up">Sign up</string>
     <string name="send">Send</string>
-    <string name="forgot_password_textview">Reset your password? please enter your password below</string>
+    <string name="forgot_password_textview">Please enter your email below and push send to reset
+    your password.</string>
     <string name="forgot_your_password_press_here">Forgot your password? Press here</string>
+    <string name="username">Username</string>
 </resources>
