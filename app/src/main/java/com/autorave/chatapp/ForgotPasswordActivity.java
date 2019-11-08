@@ -28,6 +28,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     public void resetPasswordPressed(View view) {
         String em = email.getText().toString();
 
+        if(em.isEmpty()) {
+            email.setError("Please enter an email");
+            email.requestFocus();
+        }
+
         auth.sendPasswordResetEmail(em).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
