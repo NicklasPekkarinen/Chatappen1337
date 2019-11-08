@@ -8,12 +8,36 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:41060597460:android:35c1d37ba4dcf557ec8541",
+        "mobilesdk_app_id": "1:41060597460:android:028027370f6aee65ec8541",
         "android_client_info": {
-          "package_name": "com.android.application"
+          "package_name": "com.autorave.chatapp"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "41060597460-0qpeoekc7rljimo2i3jd1dn9fesvn8u4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autorave.chatapp",
+            "certificate_hash": "9a971705792aeafd65ca30410083dcc1af091e46"
+          }
+        },
+        {
+          "client_id": "41060597460-o60nrr4r7ja56bh1kou6pgsap3nohemn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autorave.chatapp",
+            "certificate_hash": "4fe8ce8decb4b844f47793eb1ac472cdc26deda8"
+          }
+        },
+        {
+          "client_id": "41060597460-tosvevucu1invcfjecv5m7k83qcudg77.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.autorave.chatapp",
+            "certificate_hash": "1d78f84a0f3288d8a910c60b7de0c328fd5fc9ff"
+          }
+        },
         {
           "client_id": "41060597460-sduj1j6bqnchcllk6sgs3bulf6llph44.apps.googleusercontent.com",
           "client_type": 3
@@ -39,7 +63,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:41060597460:android:a49861b14b5a7d2fec8541",
         "android_client_info": {
-          "package_name": "com.autorave.chatapp"
+          "package_name": "com.example.myapplication"
         }
       },
       "oauth_client": [
