@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
     private TextView userName;
     private FirebaseUser firebaseUser;
     private DatabaseReference databaseReference;
+    private ImageView logoutBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
         frameLayout = findViewById(R.id.frame_layout);
         profileImage = findViewById(R.id.profile_image);
         userName = findViewById(R.id.username_toolbar);
+        logoutBtn = findViewById(R.id.logout_btn);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference().child(firebaseUser.getUid());
@@ -98,5 +103,11 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+    public void logOut(View view) {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        finish();
     }
 }
