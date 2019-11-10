@@ -52,7 +52,8 @@
                 android:layout_alignEnd="@id/toolbar"
                 android:layout_centerInParent="true"
                 android:clickable="true"
-                android:focusable="true"/>
+                android:focusable="true"
+                android:onClick="logOut"/>
 
         </RelativeLayout>
 
