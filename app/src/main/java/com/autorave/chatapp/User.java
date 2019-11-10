@@ -10,7 +10,7 @@ package com.autorave.chatapp;
             this.username = username;
         }
 
-        public String username;
+        private String username;
 
 
         public User() {
