@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
         logoutBtn = findViewById(R.id.logout_btn);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child(firebaseUser.getUid());
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
