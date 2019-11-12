@@ -20,6 +20,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+
 
 public class SignUpActivity extends AppCompatActivity {
     private EditText emailID, passWord, userName;
@@ -59,7 +61,6 @@ public class SignUpActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
                         insertValuesToFirebase();
-                        FirebaseUser user = mFirebaseAuth.getCurrentUser();
 
                     }
                     else{
@@ -77,9 +78,23 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void insertValuesToFirebase(){
         String uN = userName.getText().toString().trim();
-        User userName = new User(uN);
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
-        mRootReference.child("Users").child(user.getUid()).setValue(userName);
+        String userID = user.getUid();
+
+        HashMap<String,String> hashMap = new HashMap<>();
+        hashMap.put("id",userID);
+        hashMap.put("userName",uN);
+
+        mRootReference.child("Users").child(user.getUid()).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
 
 
         Toast.makeText(SignUpActivity.this,"Account Created, Welcome :)",Toast.LENGTH_SHORT).show();
