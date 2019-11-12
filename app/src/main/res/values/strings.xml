@@ -11,4 +11,5 @@
     <string name="forgot_password_textview">Reset your password? please enter your password below</string>
     <string name="forgot_your_password_press_here">Forgot your password? Press here</string>
     <string name="write_a_message">Write a message</string>
+    <string name="type_a_message">Type a message</string>
 </resources>

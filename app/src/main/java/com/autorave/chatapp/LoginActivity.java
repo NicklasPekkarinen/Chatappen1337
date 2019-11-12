@@ -99,8 +99,5 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void goToChat(View view) {
-        Intent intent = new Intent(this, chatPage.class);
-        startActivity(intent);
-    }
+
 }
