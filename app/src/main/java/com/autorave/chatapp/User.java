@@ -9,9 +9,9 @@ package com.autorave.chatapp;
             // Default constructor required for calls to DataSnapshot
         }
 
-        public User(String username) {
+        public User(String username, String id) {
             this.username = username;
-
+            this.id = id;
         }
 
         public String getUsername() {
