@@ -32,10 +32,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         mFirebaseAuth =FirebaseAuth.getInstance();
-        if(mFirebaseAuth.getCurrentUser() != null){
-            startActivity(new Intent(this,SignUpActivity.class));
-            finish();
-        }
+
         mRootReference = FirebaseDatabase.getInstance().getReference();
 
         emailID = findViewById(R.id.edit_email);
@@ -83,6 +80,7 @@ public class SignUpActivity extends AppCompatActivity {
         User userName = new User(uN);
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         mRootReference.child("Users").child(user.getUid()).setValue(userName);
+
 
         Toast.makeText(SignUpActivity.this,"Account Created, Welcome :)",Toast.LENGTH_SHORT).show();
     }
