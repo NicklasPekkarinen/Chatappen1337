@@ -11,7 +11,7 @@
         android:id="@+id/logo"
         android:layout_width="match_parent"
         android:layout_height="249dp"
-        android:src="@mipmap/chatapplogo"
+        android:src="@drawable/ic_logotype_blue"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp" />
 
@@ -35,11 +35,21 @@
         android:textColor="@color/text_white"
         android:layout_below="@id/edit_email"/>
 
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_password_checkbox"
+        android:layout_below="@+id/edit_password"
+        android:textColor="@color/text_white"
+        android:buttonTint="@color/text_white" />
+
     <TextView
+        android:id="@+id/forgot_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/forgot_your_password_press_here"
-        android:layout_below="@id/edit_password"
+        android:layout_below="@id/checkbox"
         android:textColor="@color/text_white"
         android:onClick="forgotPassword"/>
 
@@ -47,7 +57,7 @@
         android:id="@+id/button_login"
         android:layout_width="204dp"
         android:layout_height="29dp"
-        android:layout_below="@id/edit_password"
+        android:layout_below="@id/forgot_password"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:background="@color/colorPrimary"
