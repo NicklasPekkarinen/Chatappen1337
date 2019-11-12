@@ -2,16 +2,8 @@ package com.autorave.chatapp;
 
     public class User {
 
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
         private String username;
-
+        private String id;
 
         public User() {
             // Default constructor required for calls to DataSnapshot
@@ -22,6 +14,17 @@ package com.autorave.chatapp;
 
         }
 
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getId() {
+            return id;
+        }
     }
 
 
