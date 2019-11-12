@@ -2,8 +2,12 @@ package com.autorave.chatapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
     EditText emailID, passWord;
+    CheckBox showPassword;
     Button btnLogin;
     FirebaseAuth mFirebaseAuth;
     FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -32,6 +37,20 @@ public class LoginActivity extends AppCompatActivity {
         emailID = findViewById(R.id.edit_email);
         passWord = findViewById(R.id.edit_password);
         btnLogin = findViewById(R.id.button_login);
+
+        showPassword = findViewById(R.id.checkbox);
+
+        showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    passWord.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                }
+                else {
+                    passWord.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+            }
+        });
 
     }
 
