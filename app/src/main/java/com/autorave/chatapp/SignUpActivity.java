@@ -6,7 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -25,6 +29,7 @@ import java.util.HashMap;
 
 public class SignUpActivity extends AppCompatActivity {
     private EditText emailID, passWord, userName;
+    private CheckBox showPassword;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mRootReference;
 
@@ -40,6 +45,19 @@ public class SignUpActivity extends AppCompatActivity {
         emailID = findViewById(R.id.edit_email);
         passWord = findViewById(R.id.edit_password);
         userName = findViewById(R.id.user_name);
+        showPassword = findViewById(R.id.check_box);
+
+        showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    passWord.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                }
+                else {
+                    passWord.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+            }
+        });
 
     }
     public void signUp(View view) {
@@ -78,14 +96,11 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void insertValuesToFirebase(){
         String uN = userName.getText().toString().trim();
-        FirebaseUser user = mFirebaseAuth.getCurrentUser();
-        String userID = user.getUid();
+        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+        String userID = firebaseUser.getUid();
+        User user = new User(uN,userID);
 
-        HashMap<String,String> hashMap = new HashMap<>();
-        hashMap.put("id",userID);
-        hashMap.put("userName",uN);
-
-        mRootReference.child("Users").child(user.getUid()).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+        mRootReference.child("Users").child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
