@@ -24,8 +24,6 @@ public class ListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
 
-        //code same as in the tutorial????
-
     }
 
 
