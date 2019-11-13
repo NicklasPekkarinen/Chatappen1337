@@ -23,7 +23,11 @@ public class ListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+
+        //code same as in the tutorial????
+
     }
+
 
     @Override
     public int getItemCount() {
@@ -44,6 +48,8 @@ public class ListAdapter extends RecyclerView.Adapter {
             mLastMsg = itemView.findViewById(R.id.chats_last_message);
 
         }
+
+
 
         public void bindData(int position) {
 

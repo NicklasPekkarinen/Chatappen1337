@@ -39,6 +39,7 @@ public class chatPage extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String userId = intent.getStringExtra("userId");
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         username = findViewById(R.id.chats_username);
         image = findViewById(R.id.user_chats_image);
