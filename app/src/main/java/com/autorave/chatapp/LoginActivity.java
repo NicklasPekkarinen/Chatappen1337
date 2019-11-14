@@ -27,7 +27,6 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     FirebaseAuth.AuthStateListener mAuthStateListener;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,12 +36,13 @@ public class LoginActivity extends AppCompatActivity {
         emailID = findViewById(R.id.edit_email);
         passWord = findViewById(R.id.edit_password);
         btnLogin = findViewById(R.id.button_login);
-
         showPassword = findViewById(R.id.checkbox);
 
+        //Method to show or hide password
         showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
                 if(b){
                     passWord.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                 }
@@ -54,19 +54,19 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
     public void loginProses(View view) {
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
-                if(mFirebaseUser != null){
-                    Toast.makeText(LoginActivity.this,"You are loged in",Toast.LENGTH_SHORT).show();
-                    //Intent to home activity
 
-                }
-                else {
+                if(mFirebaseUser != null) {
+                    Toast.makeText(LoginActivity.this, "You are logged in", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+
+                } else {
                     Toast.makeText(LoginActivity.this,"Please Login",Toast.LENGTH_SHORT).show();
                 }
 
@@ -83,29 +83,30 @@ public class LoginActivity extends AppCompatActivity {
             passWord.setError("Please enter your password");
             passWord.requestFocus();
         }
-        else if(email.isEmpty() && pwd.isEmpty()){
-            Toast.makeText(this,"please enter your information",Toast.LENGTH_SHORT).show();
-        }
-        else if(!(email.isEmpty() && pwd.isEmpty())){
-            mFirebaseAuth.signInWithEmailAndPassword(email,pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+
+        mFirebaseAuth.signInWithEmailAndPassword(email,pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
+                    FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
                     if(!task.isSuccessful()){
                         Toast.makeText(LoginActivity.this,"Login error please login again",Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                        startActivity(intent);
-                        Toast.makeText(LoginActivity.this,"You made it to your conversations",Toast.LENGTH_SHORT).show();
+                        // checks if the user has verified their email, if so the user can log in.
+                        boolean isEmailVerified = mFirebaseUser.isEmailVerified();
+                        if(isEmailVerified){
+                            Toast.makeText(LoginActivity.this,"You are logged in",Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                            startActivity(intent);
+
+                        }
+                        else{
+                            Toast.makeText(LoginActivity.this,"Please Verify your email",Toast.LENGTH_SHORT).show();
+                        }
 
                     }
                 }
-            });
-        }
-        else {
-            Toast.makeText(LoginActivity.this,"Error occurred",Toast.LENGTH_SHORT).show();
-
-        }
+        });
 
     }
     public void toSignUp(View view){
@@ -116,5 +117,11 @@ public class LoginActivity extends AppCompatActivity {
     public void forgotPassword(View view) {
         Intent intent = new Intent(LoginActivity.this,ForgotPasswordActivity.class);
         startActivity(intent);
+    }
+    private void userLoggedIn(){
+
+    }
+    private void userLoggedUt(){
+
     }
 }
