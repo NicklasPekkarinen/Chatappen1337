@@ -18,8 +18,8 @@ import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
-    public static final int MSG_LEFT = 0;
-    public static final int MSG_RIGHT = 1;
+    public static final int DISPLAY_LEFT = 0;
+    public static final int DISPLAY_RIGHT = 1;
 
     private Context context;
     private List<ChatInfo> chat;
@@ -35,7 +35,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @NonNull
     @Override
     public ChatAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == MSG_RIGHT){
+        if(viewType == DISPLAY_RIGHT){
             View view = LayoutInflater.from(context).inflate(R.layout.chat_display_right, parent);
             return new ChatAdapter.ViewHolder(view);
         } else{
@@ -79,9 +79,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public int getItemViewType(int position){
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(chat.get(position).getSender().equals(firebaseUser.getUid())){
-            return MSG_RIGHT;
+            return DISPLAY_RIGHT;
         } else{
-            return MSG_LEFT;
+            return DISPLAY_LEFT;
         }
     }
 
