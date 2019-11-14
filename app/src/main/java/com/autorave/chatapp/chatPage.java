@@ -1,6 +1,5 @@
 package com.autorave.chatapp;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,11 +12,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
@@ -27,9 +23,11 @@ public class chatPage extends AppCompatActivity {
 
     CircleImageView profile_image;
     TextView username;
+    String currentUserId;
 
+    FirebaseAuth mAuth;
     FirebaseUser firebaseUser;
-    DatabaseReference reference;
+    DatabaseReference UsersRef;
 
     ImageButton sendButton;
     EditText sendMsg;
@@ -47,17 +45,18 @@ public class chatPage extends AppCompatActivity {
         sendMsg = findViewById(R.id.text_send_message);
 
 
-        //what class should have the intent?
+        //what class should have the initial intent?
         Intent intent = getIntent();
         final String userid = intent.getStringExtra("userid");
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUserId = mAuth.getCurrentUser().getUid();
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String msg = sendMsg.getText().toString();
                 if(!msg.equals(" ")){
-                    sendMessage(firebaseUser.getUid(),userid,msg);
+                    sendMessage(currentUserId,userid,msg);
                 } else {
                     Toast.makeText(chatPage.this, "Type in a message", Toast.LENGTH_SHORT).show();
                 }
@@ -66,7 +65,8 @@ public class chatPage extends AppCompatActivity {
         });
 
 
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+       // UsersRef = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
 
     }
@@ -85,4 +85,6 @@ public class chatPage extends AppCompatActivity {
 
 
     }
+
+
 }
