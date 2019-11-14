@@ -49,7 +49,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         ChatInfo chatInfo = chat.get(position);
 
-        //get the  message
+
 
 
     }
