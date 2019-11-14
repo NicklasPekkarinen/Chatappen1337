@@ -23,9 +23,7 @@ public class chatPage extends AppCompatActivity {
 
     CircleImageView profile_image;
     TextView username;
-    String currentUserId;
 
-    FirebaseAuth mAuth;
     FirebaseUser firebaseUser;
     DatabaseReference UsersRef;
 
@@ -45,18 +43,19 @@ public class chatPage extends AppCompatActivity {
         sendMsg = findViewById(R.id.text_send_message);
 
 
-        //what class should have the initial intent?
+
         Intent intent = getIntent();
         final String userid = intent.getStringExtra("userid");
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserId = mAuth.getCurrentUser().getUid();
+
+
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String msg = sendMsg.getText().toString();
                 if(!msg.equals(" ")){
-                    sendMessage(currentUserId,userid,msg);
+                    sendMessage(firebaseUser.getUid(),userid,msg);
                 } else {
                     Toast.makeText(chatPage.this, "Type in a message", Toast.LENGTH_SHORT).show();
                 }
@@ -65,8 +64,8 @@ public class chatPage extends AppCompatActivity {
         });
 
 
-       // UsersRef = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        UsersRef = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+
 
 
     }
@@ -81,7 +80,7 @@ public class chatPage extends AppCompatActivity {
         hashMap.put("receiver",receiver);
         hashMap.put("message",message);
 
-        reference.child("Conversations").push().setValue(hashMap);
+        reference.child("Chats").push().setValue(hashMap);
 
 
     }
