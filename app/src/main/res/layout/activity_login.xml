@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:hint="@string/password"
+        android:inputType="textPassword"
         android:textColorHint="@color/text_white"
         android:textColor="@color/text_white"
         android:layout_below="@id/edit_email"/>
