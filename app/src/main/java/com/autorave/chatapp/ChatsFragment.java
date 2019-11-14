@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -22,6 +34,13 @@ import android.view.ViewGroup;
 public class ChatsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private RecyclerView recyclerView;
+    private ChatsListAdapter chatsListAdapter;
+    private List<User> mContacts;
+    private List<String> usersList;
+
+    private FirebaseUser fbUser;
+    private DatabaseReference dbReference;
 
     public ChatsFragment() {
         // Required empty public constructor
@@ -33,36 +52,85 @@ public class ChatsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chats, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.chats_list);
-        ListAdapter listAdapter = new ListAdapter();
-        recyclerView.setAdapter(listAdapter);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView = view.findViewById(R.id.chats_list);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        usersList = new ArrayList<>();
+
+        fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        dbReference = FirebaseDatabase.getInstance().getReference();
+
+        dbReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                usersList.clear();
+
+                /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Chat chat = snapshot.getValue(Chat.class);
+
+                    if (chat.getSender().equals(fbUser.getUid())) {
+
+                        usersList.add(chat.getReceiver);
+
+                    } else if (chat.getReceiver().equals(fbUser.getUid())) {
+
+                        userList.add(chat.getSender);
+                    }
+                }
+                getChats();*/
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+    public void getChats() {
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+        mContacts = new ArrayList<>();
+        dbReference = FirebaseDatabase.getInstance().getReference("Users");
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+        dbReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mContacts.clear();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    User user = snapshot.getValue(User.class);
+
+                    for (String id : usersList) {
+
+                        if (user.getId().equals(id)) {
+
+                            if (mContacts.size() != 0) {
+
+                                for (User mUser : mContacts) {
+
+                                    if (!user.getId().equals(mUser.getId())) {
+                                        mContacts.add(user);
+                                    }
+                                }
+                            } else {
+                                mContacts.add(user);
+                            }
+                        }
+                    }
+                }
+                chatsListAdapter = new ChatsListAdapter(mContacts, getContext());
+                recyclerView.setAdapter(chatsListAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     /**
