@@ -29,53 +29,48 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatPage extends AppCompatActivity {
 
+
     CircleImageView profile_image;
     TextView username;
 
-    ImageButton btnSend;
-    EditText textSend;
-
-    ChatAdapter chatAdapter;
-    List<ChatInfo> mchat;
-
-    RecyclerView recyclerView;
-
     FirebaseUser firebaseUser;
     DatabaseReference reference;
+
+    ImageButton btnSend;
+    EditText messageSend;
+
+    Intent intent;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_page);
 
-        recyclerView = findViewById(R.id.id_text);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        linearLayoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
 
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.chats_username);
         btnSend = findViewById(R.id.send_button);
-        textSend = findViewById(R.id.message_send);
+        messageSend = findViewById(R.id.message_send);
 
-        Intent intent = getIntent();
+        intent = getIntent();
         final String userId = intent.getStringExtra("userId");
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msg = textSend.getText().toString();
+                String msg = messageSend.getText().toString();
                 if(!msg.equals("")){
                     sendMessage(firebaseUser.getUid(),userId,msg);
-                }else{
+                } else {
                     Toast.makeText(ChatPage.this, "Type in a message", Toast.LENGTH_SHORT).show();
                 }
-                textSend.setText("");
 
-                }
+                messageSend.setText("");
 
+            }
         });
 
 
@@ -86,8 +81,6 @@ public class ChatPage extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
-                readMessage(firebaseUser.getUid(), userId);
-
             }
 
             @Override
@@ -95,9 +88,11 @@ public class ChatPage extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void sendMessage(String sender, String receiver, String message){
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -107,31 +102,5 @@ public class ChatPage extends AppCompatActivity {
 
         reference.child("Chats").push().setValue(hashMap);
 
-    }
-
-    private void readMessage(final String myid, final String userid){
-        mchat = new ArrayList<>();
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mchat.clear();
-                for(DataSnapshot snapshot :dataSnapshot.getChildren()){
-                    ChatInfo chatInfo = snapshot.getValue(ChatInfo.class);
-                    if(chatInfo.getReceiver().equals(myid) && chatInfo.getSender().equals(userid) ||
-                            chatInfo.getReceiver().equals(userid) && chatInfo.getSender().equals(myid)){
-                        mchat.add(chatInfo);
-                    }
-
-                    chatAdapter = new ChatAdapter(ChatPage.this, mchat);
-                    recyclerView.setAdapter(chatAdapter);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 }
