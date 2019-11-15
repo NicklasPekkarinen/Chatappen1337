@@ -20,14 +20,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public static final int DISPLAY_LEFT = 0;
     public static final int DISPLAY_RIGHT = 1;
 
-    private Context context;
+    private Context mContext;
     private List<ChatInfo> chat;
 
     private FirebaseUser firebaseUser;
 
     public ChatAdapter(Context context, List<ChatInfo> chat){
         this.chat = chat;
-        this.context = context;
+        this.mContext = context;
 
     }
 
@@ -35,10 +35,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public ChatAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(viewType == DISPLAY_RIGHT){
-            View view = LayoutInflater.from(context).inflate(R.layout.chat_right, parent);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.chat_right, parent);
             return new ChatAdapter.ViewHolder(view);
         } else{
-            View view = LayoutInflater.from(context).inflate(R.layout.chat_left, parent);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.chat_left, parent);
             return new ChatAdapter.ViewHolder(view);
         }
     }
