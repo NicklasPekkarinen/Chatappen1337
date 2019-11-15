@@ -26,9 +26,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private FirebaseUser firebaseUser;
 
-    public ChatAdapter(Context context, List<ChatInfo> chat){
+    public ChatAdapter(Context mContext, List<ChatInfo> chat){
         this.chat = chat;
-        this.mContext = context;
+        this.mContext = mContext;
 
     }
 
