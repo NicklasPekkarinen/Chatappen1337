@@ -36,8 +36,14 @@ public class ChatPage extends AppCompatActivity {
     FirebaseUser firebaseUser;
     DatabaseReference reference;
 
+
     ImageButton btnSend;
     EditText messageSend;
+
+    ChatAdapter chatAdapter;
+    List<ChatInfo> chat;
+
+    RecyclerView recyclerView;
 
     Intent intent;
 
@@ -47,6 +53,12 @@ public class ChatPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_page);
+
+        recyclerView = findViewById(R.id.id_text);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
 
         profile_image = findViewById(R.id.profile_image);
@@ -81,6 +93,8 @@ public class ChatPage extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
+
+                readMessage(firebaseUser.getUid(), userId);
             }
 
             @Override
@@ -101,6 +115,35 @@ public class ChatPage extends AppCompatActivity {
         hashMap.put("message", message);
 
         reference.child("Chats").push().setValue(hashMap);
+
+    }
+
+    private void readMessage(final String myId, final String userId){
+        chat = new ArrayList<>();
+
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                chat.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    ChatInfo chatInfo = snapshot.getValue(ChatInfo.class);
+                    if(chatInfo.getReceiver().equals(myId) && chatInfo.getSender().equals(userId) ||
+                            chatInfo.getReceiver().equals(userId) && chatInfo.getSender().equals(myId)){
+                                          chat.add(chatInfo);
+                    }
+
+                    chatAdapter = new ChatAdapter(ChatPage.this, chat);
+                    recyclerView.setAdapter(chatAdapter);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 }
