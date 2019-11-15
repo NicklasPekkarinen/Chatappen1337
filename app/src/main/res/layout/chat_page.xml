@@ -20,7 +20,8 @@
         android:text="username"
         android:id="@+id/chats_username"
         android:layout_toEndOf="@id/profile_image"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
         android:textSize="18sp"
         android:textStyle="bold"/>
 
@@ -30,6 +31,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/profile_image"
         android:layout_above="@id/message_layout"/>
+
 
     <RelativeLayout
         android:id="@+id/message_layout"
