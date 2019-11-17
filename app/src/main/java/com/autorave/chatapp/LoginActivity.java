@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,11 +27,20 @@ public class LoginActivity extends AppCompatActivity {
     Button btnLogin;
     FirebaseAuth mFirebaseAuth;
     FirebaseAuth.AuthStateListener mAuthStateListener;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //Checks if a user is already logged in and skips LoginActivity
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null){
+            Intent intent = new Intent(this,MainActivity.class);
+            startActivity(intent);
+            this.finish();
+        }
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailID = findViewById(R.id.edit_email);
@@ -55,35 +65,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginProses(View view) {
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
-
-                if(mFirebaseUser != null) {
-                    Toast.makeText(LoginActivity.this, "You are logged in", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-
-                } else {
-                    Toast.makeText(LoginActivity.this,"Please Login",Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        };
-
+        //checks if email and password is empty
         String email = emailID.getText().toString();
         String pwd = passWord.getText().toString();
         if(email.isEmpty()){
-            emailID.setError("Please enter an email");
+            emailID.setError("Please enter your email");
             emailID.requestFocus();
         }
         else if(pwd.isEmpty()){
             passWord.setError("Please enter your password");
             passWord.requestFocus();
         }
-
         mFirebaseAuth.signInWithEmailAndPassword(email,pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -98,7 +90,6 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this,"You are logged in",Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                             startActivity(intent);
-
                         }
                         else{
                             Toast.makeText(LoginActivity.this,"Please Verify your email",Toast.LENGTH_SHORT).show();
@@ -107,21 +98,36 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
         });
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+                if(mFirebaseUser != null) {
+                    Toast.makeText(LoginActivity.this, "You are logged in", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                } else {
+                    Toast.makeText(LoginActivity.this,"Please Login",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        };
 
     }
+    //onClick textview to sign up
     public void toSignUp(View view){
         Intent intent = new Intent(LoginActivity.this,SignUpActivity.class);
         startActivity(intent);
+        finish();
     }
-
+    //onClick textview to forgot email activity
     public void forgotPassword(View view) {
         Intent intent = new Intent(LoginActivity.this,ForgotPasswordActivity.class);
         startActivity(intent);
-    }
-    private void userLoggedIn(){
-
-    }
-    private void userLoggedUt(){
-
+        finish();
     }
 }
