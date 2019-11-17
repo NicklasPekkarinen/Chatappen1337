@@ -121,6 +121,8 @@ public class ChatPage extends AppCompatActivity {
     private void readMessage(final String myId, final String userId){
         chat = new ArrayList<>();
 
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
