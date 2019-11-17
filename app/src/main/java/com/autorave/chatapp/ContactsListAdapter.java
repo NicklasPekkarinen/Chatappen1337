@@ -49,7 +49,7 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, chatPage.class);
+                Intent intent = new Intent(mContext, ChatPage.class);
                 intent.putExtra("userId", user.getId());
                 mContext.startActivity(intent);
             }
