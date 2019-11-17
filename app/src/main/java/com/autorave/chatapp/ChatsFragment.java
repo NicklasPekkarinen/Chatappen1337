@@ -83,7 +83,7 @@ public class ChatsFragment extends Fragment {
                         return;
                     }
                 }
-                //getChats();
+                getChats();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -94,7 +94,7 @@ public class ChatsFragment extends Fragment {
         return view;
     }
 
-    /*public void getChats() {
+    public void getChats() {
 
         mContacts = new ArrayList<>();
         dbReference = FirebaseDatabase.getInstance().getReference("Users");
@@ -111,15 +111,7 @@ public class ChatsFragment extends Fragment {
 
                         if (user.getId().equals(id)) {
 
-                            if (mContacts.size() != 0) {
-
-                                for (User mUser : mContacts) {
-
-                                    if (!user.getId().equals(mUser.getId())) {
-                                            mContacts.add(user);
-                                    }
-                                }
-                            } else {
+                            if (!mContacts.contains(user)) {
                                 mContacts.add(user);
                             }
                         }
@@ -135,7 +127,7 @@ public class ChatsFragment extends Fragment {
             }
         });
 
-    }*/
+    }
 
     /**
      * This interface must be implemented by activities that contain this
