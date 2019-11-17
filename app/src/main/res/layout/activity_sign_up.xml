@@ -15,6 +15,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp" />
 
+    <RelativeLayout
+        android:id="@+id/relative_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
     <EditText
         android:id="@+id/edit_email"
         android:layout_width="match_parent"
@@ -22,8 +30,7 @@
         android:layout_marginTop="20dp"
         android:hint="@string/email"
         android:textColorHint="@color/text_white"
-        android:textColor="@color/text_white"
-        android:layout_below="@+id/logo"/>
+        android:textColor="@color/text_white" />
 
     <EditText
         android:id="@+id/user_name"
@@ -53,13 +60,14 @@
         android:buttonTint="@color/text_white"
         android:text="@string/show_password_checkbox"
         android:textColor="@color/text_white" />
+    </RelativeLayout>
 
 
     <Button
         android:id="@+id/button_sign_up"
         android:layout_width="204dp"
         android:layout_height="29dp"
-        android:layout_below="@+id/check_box"
+        android:layout_below="@+id/relative_2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
