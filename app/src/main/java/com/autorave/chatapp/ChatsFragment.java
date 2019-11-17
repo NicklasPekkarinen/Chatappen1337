@@ -60,26 +60,30 @@ public class ChatsFragment extends Fragment {
         usersList = new ArrayList<>();
 
         fbUser = FirebaseAuth.getInstance().getCurrentUser();
-        dbReference = FirebaseDatabase.getInstance().getReference();
+        dbReference = FirebaseDatabase.getInstance().getReference("Chats");
 
         dbReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 usersList.clear();
 
-                /*for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Chat chat = snapshot.getValue(Chat.class);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ChatInfo chat = snapshot.getValue(ChatInfo.class);
 
-                    if (chat.getSender().equals(fbUser.getUid())) {
+                    if (chat != null && fbUser != null) {
+                        if (chat.getSender().equals(fbUser.getUid())) {
 
-                        usersList.add(chat.getReceiver);
+                            usersList.add(chat.getReceiver());
 
-                    } else if (chat.getReceiver().equals(fbUser.getUid())) {
+                        } else if (chat.getReceiver().equals(fbUser.getUid())) {
 
-                        userList.add(chat.getSender);
+                            usersList.add(chat.getSender());
+                        }
+                    } else {
+                        return;
                     }
                 }
-                getChats();*/
+                //getChats();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -90,7 +94,7 @@ public class ChatsFragment extends Fragment {
         return view;
     }
 
-    public void getChats() {
+    /*public void getChats() {
 
         mContacts = new ArrayList<>();
         dbReference = FirebaseDatabase.getInstance().getReference("Users");
@@ -112,7 +116,7 @@ public class ChatsFragment extends Fragment {
                                 for (User mUser : mContacts) {
 
                                     if (!user.getId().equals(mUser.getId())) {
-                                        mContacts.add(user);
+                                            mContacts.add(user);
                                     }
                                 }
                             } else {
@@ -131,7 +135,7 @@ public class ChatsFragment extends Fragment {
             }
         });
 
-    }
+    }*/
 
     /**
      * This interface must be implemented by activities that contain this
