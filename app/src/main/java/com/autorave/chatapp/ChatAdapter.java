@@ -36,10 +36,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public ChatAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(viewType == DISPLAY_RIGHT){
-            View view = LayoutInflater.from(mContext).inflate(R.layout.chat_right, parent);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.chat_right, parent, false);
             return new ChatAdapter.ViewHolder(view);
         } else{
-            View view = LayoutInflater.from(mContext).inflate(R.layout.chat_left, parent);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.chat_left, parent, false);
             return new ChatAdapter.ViewHolder(view);
         }
     }
@@ -64,8 +64,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         public ImageView profileImage;
 
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
+        public ViewHolder(View itemView) {
+                super(itemView);
 
             showMessage = itemView.findViewById(R.id.show_message);
             profileImage = itemView.findViewById(R.id.profile_image);
