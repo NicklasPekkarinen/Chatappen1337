@@ -76,28 +76,28 @@ public class LoginActivity extends AppCompatActivity {
             passWord.setError("Please enter your password");
             passWord.requestFocus();
         }
-        mFirebaseAuth.signInWithEmailAndPassword(email,pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+        else{
+            mFirebaseAuth.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
-                    if(!task.isSuccessful()){
-                        Toast.makeText(LoginActivity.this,"Login error please login again",Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                    if (!task.isSuccessful()) {
+                        Toast.makeText(LoginActivity.this, "Login error please login again", Toast.LENGTH_SHORT).show();
+                    } else {
                         // checks if the user has verified their email, if so the user can log in.
                         boolean isEmailVerified = mFirebaseUser.isEmailVerified();
-                        if(isEmailVerified){
-                            Toast.makeText(LoginActivity.this,"You are logged in",Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                        if (isEmailVerified) {
+                            Toast.makeText(LoginActivity.this, "You are logged in", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
-                        }
-                        else{
-                            Toast.makeText(LoginActivity.this,"Please Verify your email",Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Please Verify your email", Toast.LENGTH_SHORT).show();
                         }
 
                     }
                 }
-        });
+            });
+        }
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
 
             @Override

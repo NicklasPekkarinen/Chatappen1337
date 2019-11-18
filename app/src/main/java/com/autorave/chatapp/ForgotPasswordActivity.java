@@ -31,21 +31,20 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         if(em.isEmpty()) {
             email.setError("Please enter an email");
             email.requestFocus();
+        }else{
+
+            auth.sendPasswordResetEmail(em).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(ForgotPasswordActivity.this, "Email sent", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ForgotPasswordActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
         }
-
-        auth.sendPasswordResetEmail(em).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(ForgotPasswordActivity.this,"Email sent",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(ForgotPasswordActivity.this,"Please try again",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
 
     }
 

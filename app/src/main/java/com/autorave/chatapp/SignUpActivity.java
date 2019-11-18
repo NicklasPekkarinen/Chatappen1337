@@ -63,28 +63,27 @@ public class SignUpActivity extends AppCompatActivity {
         String pwd = passWord.getText().toString();
 
         //checks if any of the fields are empty
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             emailID.setError("Please enter your email");
             emailID.requestFocus();
-        }
-        else if(pwd.isEmpty()){
+        } else if (pwd.isEmpty()) {
             passWord.setError("Please enter your password");
             passWord.requestFocus();
-        }
+        } else {
             // If all field are field this method crates user
-            mFirebaseAuth.createUserWithEmailAndPassword(email,pwd).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+            mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         insertValuesToFirebase();
 
-                    }
-                    else{
-                        Toast.makeText(SignUpActivity.this,"SignUp failed",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(SignUpActivity.this, "SignUp failed", Toast.LENGTH_SHORT).show();
 
                     }
                 }
             });
+        }
     }
     // Method to insert all values in database, like Email and password and username
     private void insertValuesToFirebase(){
