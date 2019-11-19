@@ -11,18 +11,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapter.ViewHolder> {
 
     private Context mContext;
     private List<User> mContacts;
+    private List<User> copyContacts;
 
     public ContactsListAdapter(List<User> mContacts, Context mContext) {
 
         this.mContext = mContext;
         this.mContacts = mContacts;
-
+        copyContacts = new ArrayList<>();
+        copyContacts.addAll(mContacts);
     }
 
     @NonNull
@@ -68,5 +71,28 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
             mUserName = itemView.findViewById(R.id.contacts_username);
 
         }
+    }
+
+    public void filter(String text) {
+
+        mContacts.clear();
+
+        if (text.isEmpty()) {
+
+            mContacts.addAll(copyContacts);
+
+        } else {
+
+            text = text.toLowerCase();
+
+            for (User user: copyContacts) {
+
+                if (user.getUsername().toLowerCase().contains(text)) {
+                    mContacts.add(user);
+                }
+            }
+
+        }
+        notifyDataSetChanged();
     }
 }
