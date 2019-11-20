@@ -46,19 +46,11 @@
                         android:id="@+id/username_toolbar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="25dp" />
+                        android:layout_marginStart="25dp"
+                        android:textStyle="bold"
+                        android:textSize="24sp"
+                        android:textColor="@color/black"/>
                 </androidx.appcompat.widget.Toolbar>
-
-                <ImageView
-                    android:id="@+id/logout_btn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignEnd="@id/toolbar"
-                    android:layout_centerInParent="true"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:onClick="logOut"
-                    android:src="@drawable/ic_exit_to_app_green_24dp" />
             </RelativeLayout>
 
             <androidx.appcompat.widget.SearchView
