@@ -88,4 +88,11 @@ public class ContactsFragment extends Fragment {
 
     }
 
+    public void getFilter(String filter) {
+
+        Log.d("Autorave", "get filter");
+        contactsListAdapter.filter(filter);
+
+    }
+
 }
