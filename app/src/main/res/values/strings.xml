@@ -13,4 +13,5 @@
     <string name="forgot_your_password_press_here">Forgot your password? Press here</string>
     <string name="username">Username</string>
     <string name="show_password_checkbox">Show/Hide Password</string>
+    <string name="sign_out">Sign out</string>
 </resources>
