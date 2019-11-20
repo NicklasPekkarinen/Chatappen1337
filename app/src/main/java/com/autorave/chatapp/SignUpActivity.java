@@ -88,9 +88,11 @@ public class SignUpActivity extends AppCompatActivity {
     // Method to insert all values in database, like Email and password and username
     private void insertValuesToFirebase(){
         String uN = userName.getText().toString().trim();
+        String email = emailID.getText().toString();
+        String imageUrl = "default";
         final FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
         String userID = firebaseUser.getUid();
-        User user = new User(uN,userID);
+        User user = new User(uN,userID,email,imageUrl);
 
         mRootReference.child("Users").child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

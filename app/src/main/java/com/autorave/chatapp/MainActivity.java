@@ -1,12 +1,14 @@
 package com.autorave.chatapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,12 +16,19 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,20 +36,34 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements ChatsFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements ChatsFragment.OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener {
 
     private FrameLayout frameLayout;
     private BottomNavigationView bottomNav;
     private CircleImageView profileImage;
     private TextView userName;
+    private CircleImageView drawerProfileImage;
+    private TextView drawerUserName;
+    private TextView drawerEmail;
     private FirebaseUser firebaseUser;
     private DatabaseReference databaseReference;
-    private ImageView logoutBtn;
     private androidx.appcompat.widget.SearchView searchView;
     private ContactsFragment fragment;
+    private NavigationView navigationView;
+
+    StorageReference storageReference;
+    private final int IMAGE_REQUEST = 1;
+    private Uri imageUri;
+    private StorageTask uploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +74,17 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
         frameLayout = findViewById(R.id.frame_layout);
         profileImage = findViewById(R.id.profile_image);
         userName = findViewById(R.id.username_toolbar);
-        logoutBtn = findViewById(R.id.logout_btn);
+
+        navigationView = findViewById(R.id.nav_drawer);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        drawerProfileImage = headerView.findViewById(R.id.drawer_profile_picture);
+        drawerUserName = headerView.findViewById(R.id.drawer_username);
+        drawerEmail = headerView.findViewById(R.id.drawer_user_email);
+
+        storageReference = FirebaseStorage.getInstance().getReference("uploads");
+
         searchView = findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -75,14 +108,36 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 User user = dataSnapshot.getValue(User.class);
                 userName.setText(user.getUsername());
-                profileImage.setImageResource(R.mipmap.ic_launcher);
+                drawerUserName.setText(user.getUsername());
+                drawerEmail.setText(user.getEmail());
+
+                if (user.getImageURL().equals("default")) {
+
+                    profileImage.setImageResource(R.mipmap.ic_launcher);
+                    drawerProfileImage.setImageResource(R.mipmap.ic_launcher);
+
+                } else {
+
+                    Glide.with(MainActivity.this).load(user.getImageURL()).into(profileImage);
+                    Glide.with(MainActivity.this).load(user.getImageURL()).into(drawerProfileImage);
+
+                }
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        drawerProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImage();
             }
         });
 
@@ -106,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
             new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
             Fragment selectedFragment = null;
 
             switch (menuItem.getItemId()) {
@@ -121,12 +175,85 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
                     fragment = (ContactsFragment)selectedFragment;
                     break;
             }
-
             getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, selectedFragment, null).commit();
-
             return true;
         }
     };
+
+    private void openImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, IMAGE_REQUEST);
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = getApplicationContext().getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void uploadImage() {
+        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
+        progressDialog.setMessage("Uploading");
+        progressDialog.show();
+
+        if (imageUri != null) {
+            final StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "." +
+                    getFileExtension(imageUri));
+
+            uploadTask = fileReference.getFile(imageUri);
+            uploadTask.continueWith(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return fileReference.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        String mUri = downloadUri.toString();
+
+                        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("imageUrl", mUri);
+                        databaseReference.updateChildren(hashMap);
+                        progressDialog.dismiss();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+            });
+        } else {
+            Toast.makeText(getApplicationContext(), "No image selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+
+            if (uploadTask != null && uploadTask.isInProgress()) {
+                Toast.makeText(getApplicationContext(), "Upload in progress", Toast.LENGTH_SHORT).show();
+            } else {
+                uploadImage();
+            }
+        }
+    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
@@ -138,9 +265,16 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
 
     }
 
-    public void logOut(View view) {
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(MainActivity.this, LoginActivity.class));
-        finish();
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        switch(menuItem.getItemId()) {
+            case R.id.drawer_sign_out:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+                break;
+        }
+        return true;
     }
 }
