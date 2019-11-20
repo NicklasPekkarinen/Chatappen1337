@@ -188,13 +188,13 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
     }
 
     private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = getApplicationContext().getContentResolver();
+        ContentResolver contentResolver = MainActivity.this.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
     private void uploadImage() {
-        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setMessage("Uploading");
         progressDialog.show();
 
@@ -202,8 +202,8 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
             final StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "." +
                     getFileExtension(imageUri));
 
-            uploadTask = fileReference.getFile(imageUri);
-            uploadTask.continueWith(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            uploadTask = fileReference.putFile(imageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
@@ -220,23 +220,24 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
 
                         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
                         HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("imageUrl", mUri);
+                        hashMap.put("imageURL", mUri);
                         databaseReference.updateChildren(hashMap);
                         progressDialog.dismiss();
+
                     } else {
-                        Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                 }
             });
         } else {
-            Toast.makeText(getApplicationContext(), "No image selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -248,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
             imageUri = data.getData();
 
             if (uploadTask != null && uploadTask.isInProgress()) {
-                Toast.makeText(getApplicationContext(), "Upload in progress", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Upload in progress", Toast.LENGTH_SHORT).show();
             } else {
                 uploadImage();
             }
