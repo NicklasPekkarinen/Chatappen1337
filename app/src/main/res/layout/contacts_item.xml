@@ -17,6 +17,9 @@
         android:layout_toEndOf="@id/contacts_image"
         android:layout_centerInParent="true"
         android:layout_marginLeft="10dp"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@color/black"
         />
 
 </RelativeLayout>
