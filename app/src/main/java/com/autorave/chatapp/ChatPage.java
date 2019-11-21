@@ -47,6 +47,8 @@ public class ChatPage extends AppCompatActivity {
 
     Intent intent;
 
+    ValueEventListener msgSeenEventListener;
+
 
 
     @Override
@@ -103,6 +105,31 @@ public class ChatPage extends AppCompatActivity {
             }
         });
 
+        seenMessage(userId);
+
+    }
+
+    private void seenMessage(final String userId){
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        msgSeenEventListener = reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    ChatInfo chatInfo = snapshot.getValue(ChatInfo.class);
+                    if(chatInfo.getReceiver().equals(firebaseUser.getUid()) && chatInfo.getSender().equals(userId)){
+                        HashMap<String, Object>hashMap = new HashMap<>();
+                        hashMap.put("isseen",true);
+                        snapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void sendMessage(String sender, String receiver, String message){
@@ -113,6 +140,7 @@ public class ChatPage extends AppCompatActivity {
         hashMap.put("sender", sender);
         hashMap.put("receiver", receiver);
         hashMap.put("message", message);
+        hashMap.put("isseen", false);
 
         reference.child("Chats").push().setValue(hashMap);
 
@@ -147,5 +175,12 @@ public class ChatPage extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        reference.removeEventListener(msgSeenEventListener);
     }
 }
