@@ -51,6 +51,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         holder.showMessage.setText(chatInfo.getMessage());
 
+        if(position == chat.size()-1){
+          if(chatInfo.isIsseen()){
+              holder.msgSeen.setText("Seen");
+          } else {
+              holder.msgSeen.setText("Delivered");
+          }
+        } else {
+            holder.msgSeen.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -62,6 +72,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         public TextView showMessage;
         public ImageView profileImage;
+        public TextView msgSeen;
 
 
         public ViewHolder(View itemView) {
@@ -69,6 +80,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
             showMessage = itemView.findViewById(R.id.show_message);
             profileImage = itemView.findViewById(R.id.profile_image);
+            msgSeen = itemView.findViewById(R.id.message_seen);
         }
 
 
