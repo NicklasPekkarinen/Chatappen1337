@@ -22,4 +22,11 @@
         android:textSize="18sp"
         android:background="@drawable/background_left"/>
 
+    <TextView
+        android:id="@+id/message_seen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_below="@+id/show_message"/>
+
 </RelativeLayout>

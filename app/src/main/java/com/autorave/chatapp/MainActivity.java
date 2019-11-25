@@ -121,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
 
                 } else {
 
-                    Glide.with(MainActivity.this).load(user.getImageURL()).into(profileImage);
-                    Glide.with(MainActivity.this).load(user.getImageURL()).into(drawerProfileImage);
+                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(profileImage);
+                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(drawerProfileImage);
 
                 }
 

@@ -5,11 +5,13 @@ public class ChatInfo {
     private String sender;
     private String receiver;
     private String message;
+    private boolean isseen;
 
-    public ChatInfo(String sender, String receiver, String message) {
+    public ChatInfo(String sender, String receiver, String message, boolean isseen) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
+        this.isseen = isseen;
     }
 
     public ChatInfo(){
@@ -38,5 +40,13 @@ public class ChatInfo {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isIsseen() {
+        return isseen;
+    }
+
+    public void setIsseen(boolean isseen) {
+        this.isseen = isseen;
     }
 }

@@ -28,6 +28,15 @@
             android:textColor="#fff"
             android:textSize="18sp" />
 
+        <TextView
+            android:id="@+id/message_seen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/show_message"
+            android:text="Seen"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
     </RelativeLayout>
 
 </RelativeLayout>
