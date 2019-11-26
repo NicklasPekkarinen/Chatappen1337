@@ -90,9 +90,10 @@ public class SignUpActivity extends AppCompatActivity {
         String uN = userName.getText().toString().trim();
         String email = emailID.getText().toString();
         String imageUrl = "default";
+        String status = "offline";
         final FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
         String userID = firebaseUser.getUid();
-        User user = new User(uN,userID,email,imageUrl);
+        User user = new User(uN,userID,email,imageUrl,status);
 
         mRootReference.child("Users").child(firebaseUser.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

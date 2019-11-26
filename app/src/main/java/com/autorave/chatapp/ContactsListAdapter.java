@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +44,24 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 
         final User user = mContacts.get(position);
         holder.mUserName.setText(user.getUsername());
-        holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
+
+        if (user.getImageURL().equals("default")) {
+            holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
+        } else {
+            Glide.with(mContext).load(user.getImageURL()).into(holder.mUserImage);
+        }
+
+
+        if (user.getStatus().equals("online")) {
+            holder.mStatus.setVisibility(View.VISIBLE);
+            holder.mStatus.setImageResource(R.color.statusOnline);
+        } else if (user.getStatus().equals("away")) {
+            holder.mStatus.setVisibility(View.VISIBLE);
+            holder.mStatus.setImageResource(R.color.statusAway);
+        } else if (user.getStatus().equals("offline")) {
+            holder.mStatus.setVisibility(View.GONE);
+        }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,12 +81,14 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mUserImage;
+        private ImageView mStatus;
         private TextView mUserName;
 
         public ViewHolder(View itemView) {
 
             super(itemView);
             mUserImage = itemView.findViewById(R.id.contacts_image);
+            mStatus = itemView.findViewById(R.id.status_icon_contacts);
             mUserName = itemView.findViewById(R.id.contacts_username);
 
         }

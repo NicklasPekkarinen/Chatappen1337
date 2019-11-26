@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/contacts_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/contacts_image"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_launcher" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/status_icon_contacts"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_below="@id/contacts_image"
+        android:layout_marginStart="-15dp"
+        android:layout_marginTop="-15dp"
+        android:layout_toEndOf="@id/contacts_image"
+        android:src="@android:color/holo_green_light"
+        android:visibility="gone"
+        app:civ_border_color="@color/text_white"
+        app:civ_border_width="2dp" />
 
     <TextView
+        android:id="@+id/contacts_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/contacts_username"
-        android:layout_toEndOf="@id/contacts_image"
         android:layout_centerInParent="true"
         android:layout_marginLeft="10dp"
-        android:textStyle="bold"
-        android:textSize="18sp"
+        android:layout_toEndOf="@id/contacts_image"
         android:textColor="@color/black"
-        />
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

@@ -10,4 +10,5 @@
     <color name="black">#000000</color>
     <color name="text_white">#fff</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="statusOnline">#ff99cc00</color>
 </resources>

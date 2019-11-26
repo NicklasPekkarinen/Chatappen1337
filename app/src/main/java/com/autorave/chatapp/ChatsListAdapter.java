@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.ViewHolder> {
@@ -19,10 +21,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     private List<User> mContacts;
 
     public ChatsListAdapter(List<User> mContacts, Context mContext) {
-
         this.mContext = mContext;
         this.mContacts = mContacts;
-
     }
 
     @NonNull
@@ -31,7 +31,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.user_chats_item, parent, false);
         return new ChatsListAdapter.ViewHolder(view);
-
     }
 
     @Override
@@ -39,7 +38,19 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
         final User user = mContacts.get(position);
         holder.mUserName.setText(user.getUsername());
-        holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
+
+        if (user.getImageURL().equals("default")) {
+            holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
+        } else {
+            Glide.with(mContext).load(user.getImageURL()).into(holder.mUserImage);
+        }
+
+        if (user.getStatus().equals("online")) {
+            holder.mStatus.setVisibility(View.VISIBLE);
+            holder.mStatus.setImageResource(R.color.statusOnline);
+        } else if (user.getStatus().equals("offline")) {
+            holder.mStatus.setVisibility(View.GONE);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +70,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mUserImage;
+        private ImageView mStatus;
         private TextView mUserName;
         private TextView mLastMsg;
 
@@ -66,6 +78,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
             super(itemView);
             mUserImage = itemView.findViewById(R.id.user_chats_image);
+            mStatus = itemView.findViewById(R.id.status_icon);
             mUserName = itemView.findViewById(R.id.chats_username);
             mLastMsg = itemView.findViewById(R.id.chats_last_message);
         }
