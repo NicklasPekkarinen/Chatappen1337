@@ -51,17 +51,12 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
             Glide.with(mContext).load(user.getImageURL()).into(holder.mUserImage);
         }
 
-
         if (user.getStatus().equals("online")) {
             holder.mStatus.setVisibility(View.VISIBLE);
             holder.mStatus.setImageResource(R.color.statusOnline);
-        } else if (user.getStatus().equals("away")) {
-            holder.mStatus.setVisibility(View.VISIBLE);
-            holder.mStatus.setImageResource(R.color.statusAway);
         } else if (user.getStatus().equals("offline")) {
             holder.mStatus.setVisibility(View.GONE);
         }
-
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
