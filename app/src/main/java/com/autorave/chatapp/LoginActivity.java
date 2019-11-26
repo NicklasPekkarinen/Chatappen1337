@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
 
         //Checks if a user is already logged in and skips LoginActivity
         user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user != null){
+        if(user != null && user.isEmailVerified()){
             Intent intent = new Intent(this,MainActivity.class);
             startActivity(intent);
             this.finish();

@@ -39,10 +39,6 @@ package com.autorave.chatapp;
         public String getStatus() {
             return status;
         }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
     }
 
 
