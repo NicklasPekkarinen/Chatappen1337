@@ -13,12 +13,19 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.autorave.chatapp.Notifications.APIService;
+import com.autorave.chatapp.Notifications.Client;
+import com.autorave.chatapp.Notifications.Data;
+import com.autorave.chatapp.Notifications.MyResponse;
+import com.autorave.chatapp.Notifications.Sender;
+import com.autorave.chatapp.Notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -26,6 +33,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatPage extends AppCompatActivity {
 
@@ -47,6 +57,9 @@ public class ChatPage extends AppCompatActivity {
 
     Intent intent;
 
+    String userid;
+    Boolean notify = false;
+    APIService apiService;
 
 
     @Override
@@ -60,7 +73,7 @@ public class ChatPage extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
         profile_image = findViewById(R.id.profile_image);
         username = findViewById(R.id.chats_username);
         btnSend = findViewById(R.id.send_button);
@@ -73,6 +86,7 @@ public class ChatPage extends AppCompatActivity {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                notify = true;
                 String msg = messageSend.getText().toString();
                 if(!msg.equals("")){
                     sendMessage(firebaseUser.getUid(),userId,msg);
@@ -105,7 +119,7 @@ public class ChatPage extends AppCompatActivity {
 
     }
 
-    private void sendMessage(String sender, String receiver, String message){
+    private void sendMessage(String sender, final String receiver, String message){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -116,6 +130,60 @@ public class ChatPage extends AppCompatActivity {
 
         reference.child("Chats").push().setValue(hashMap);
 
+        final String msg = message;
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                sendNotification(receiver,user.getUsername(),msg);
+                notify = false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+    private void sendNotification(String reciver, final String username, final String message){
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = tokens.orderByKey().equalTo(reciver);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Token token = snapshot.getValue(Token.class);
+                    Data data = new Data(firebaseUser.getUid(),R.mipmap.ic_launcher,username+": "+message,"New Message",
+                            userid);
+
+                    Sender sender = new Sender(data,token.getToken());
+
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<MyResponse>() {
+                                @Override
+                                public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                    if(response.code() == 200){
+                                        if(response.body().success != 1){
+                                            Toast.makeText(ChatPage.this,"Faild",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<MyResponse> call, Throwable t) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void readMessage(final String myId, final String userId){
