@@ -35,7 +35,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:19.1.0'
 
     //notifications implements
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.google.firebase:firebase-messaging:20.0.1'
 
