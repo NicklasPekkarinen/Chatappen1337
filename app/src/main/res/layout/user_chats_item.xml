@@ -18,7 +18,7 @@
         android:layout_below="@id/user_chats_image"
         android:layout_marginStart="-15dp"
         android:layout_marginTop="-15dp"
-        android:layout_tEndOf="@id/user_chats_image"
+        android:layout_toEndOf="@id/user_chats_image"
         android:src="@android:color/holo_green_light"
         android:visibility="gone"
         app:civ_border_color="@color/text_white"
