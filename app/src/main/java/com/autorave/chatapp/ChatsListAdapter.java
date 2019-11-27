@@ -6,12 +6,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -19,6 +27,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
     private Context mContext;
     private List<User> mContacts;
+    private String lastMessage;
 
     public ChatsListAdapter(List<User> mContacts, Context mContext) {
         this.mContext = mContext;
@@ -44,6 +53,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         } else {
             Glide.with(mContext).load(user.getImageURL()).into(holder.mUserImage);
         }
+
+        lastMsg(user.getId(), holder.mLastMsg);
 
         if (user.getStatus().equals("online")) {
             holder.mStatus.setVisibility(View.VISIBLE);
@@ -82,5 +93,40 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             mUserName = itemView.findViewById(R.id.chats_username);
             mLastMsg = itemView.findViewById(R.id.chats_last_message);
         }
+    }
+
+    private void lastMsg(final String userId, final TextView mLastMsg) {
+        lastMessage = "default";
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Chats");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    ChatInfo chat = snapshot.getValue(ChatInfo.class);
+
+                    if (chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userId) ||
+                            chat.getReceiver().equals(userId) && chat.getSender().equals(firebaseUser.getUid())) {
+                        lastMessage = chat.getMessage();
+                    }
+                }
+
+                switch (lastMessage) {
+                    case "default":
+                        mLastMsg.setText("");
+                        break;
+                    default:
+                        mLastMsg.setText(lastMessage);
+                        break;
+                }
+                lastMessage = "default";
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
