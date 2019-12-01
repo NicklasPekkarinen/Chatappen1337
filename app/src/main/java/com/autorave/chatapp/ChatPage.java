@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.autorave.chatapp.Notifications.Data;
 import com.autorave.chatapp.Notifications.MyResponse;
 import com.autorave.chatapp.Notifications.Sender;
 import com.autorave.chatapp.Notifications.Token;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,6 +43,7 @@ public class ChatPage extends AppCompatActivity {
 
     CircleImageView profile_image;
     TextView username;
+
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
@@ -108,8 +111,13 @@ public class ChatPage extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 username.setText(user.getUsername());
+                if(user.getImageURL().equals("default")){
+                    profile_image.setImageResource(R.mipmap.ic_launcher);
+                } else {
+                    Glide.with(ChatPage.this).load(user.getImageURL()).into(profile_image);
+                }
 
-                readMessage(firebaseUser.getUid(), userId);
+                readMessage(firebaseUser.getUid(), userId, user.getImageURL());
             }
 
             @Override
@@ -215,7 +223,7 @@ public class ChatPage extends AppCompatActivity {
         });
     }
 
-    private void readMessage(final String myId, final String userId){
+    private void readMessage(final String myId, final String userId, final String imageUrl){
         chat = new ArrayList<>();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
@@ -232,7 +240,7 @@ public class ChatPage extends AppCompatActivity {
                                           chat.add(chatInfo);
                     }
 
-                    chatAdapter = new ChatAdapter(ChatPage.this, chat);
+                    chatAdapter = new ChatAdapter(ChatPage.this,chat, imageUrl );
                     recyclerView.setAdapter(chatAdapter);
                 }
 

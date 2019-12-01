@@ -1,19 +1,31 @@
 package com.autorave.chatapp;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
@@ -23,12 +35,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private Context mContext;
     private List<ChatInfo> chat;
+    private String imageUrl;
+
 
     private FirebaseUser firebaseUser;
 
-    public ChatAdapter(Context mContext, List<ChatInfo> chat){
+    public ChatAdapter(Context mContext, List<ChatInfo> chat, String imageUrl){
         this.chat = chat;
         this.mContext = mContext;
+        this.imageUrl = imageUrl;
 
     }
 
@@ -45,9 +60,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChatAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ChatAdapter.ViewHolder holder, final int position) {
 
         ChatInfo chatInfo = chat.get(position);
+
 
         holder.showMessage.setText(chatInfo.getMessage());
 
@@ -61,6 +77,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder.msgSeen.setVisibility(View.GONE);
         }
 
+        if(imageUrl.equals("default")){
+            holder.profileImage.setImageResource(R.mipmap.ic_launcher);
+        } else {
+            Glide.with(mContext).load(imageUrl).into(holder.profileImage);
+        }
+
+
     }
 
     @Override
@@ -73,6 +96,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         public TextView showMessage;
         public ImageView profileImage;
         public TextView msgSeen;
+        RelativeLayout msgLayout;
 
 
         public ViewHolder(View itemView) {
@@ -81,6 +105,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             showMessage = itemView.findViewById(R.id.show_message);
             profileImage = itemView.findViewById(R.id.profile_image);
             msgSeen = itemView.findViewById(R.id.message_seen);
+            msgLayout = itemView.findViewById(R.id.msg_layout);
         }
 
 
@@ -95,5 +120,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             return DISPLAY_LEFT;
         }
     }
+
 
 }
