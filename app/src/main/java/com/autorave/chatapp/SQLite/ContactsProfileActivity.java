@@ -67,9 +67,13 @@ public class ContactsProfileActivity extends AppCompatActivity implements Nickna
                 user = dataSnapshot.getValue(User.class);
                 ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
 
-                if (SQLData != null && SQLData.get(1).equals(user.getId())) {
-                    userName.setText(SQLData.get(0));
-                } else {
+                for (int i = 0; i < SQLData.size(); i++) {
+                    if (SQLData != null && SQLData.get(i).equals(user.getId())) {
+                        userName.setText(SQLData.get(i-1));
+                    }
+                }
+
+                if (userName.getText().length() <= 0) {
                     userName.setText(user.getUsername());
                 }
 
@@ -109,6 +113,14 @@ public class ContactsProfileActivity extends AppCompatActivity implements Nickna
         SQLSETDATA.add(user.getId());
         nameChangeDBHelper.setDataSQL(SQLSETDATA);
         ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
-        userName.setText(SQLData.get(0));
+        for (int i = 0; i < SQLData.size(); i++) {
+            if (SQLData != null && SQLData.get(i).equals(user.getId())) {
+                userName.setText(SQLData.get(i-1));
+            }
+        }
+
+        if (userName.getText().length() <= 0) {
+            userName.setText(user.getUsername());
+        }
     }
 }

@@ -150,11 +150,17 @@ public class ChatPage extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
-                if (SQLData != null && SQLData.get(1).equals(user.getId())) {
-                    username.setText(SQLData.get(0));
-                } else {
+
+                for (int i = 0; i < SQLData.size(); i++) {
+                    if (SQLData != null && SQLData.get(i).equals(user.getId())) {
+                        username.setText(SQLData.get(i-1));
+                    }
+                }
+                if (username.getText().length() <= 0) {
+                    Log.d("Autorave", user.getUsername());
                     username.setText(user.getUsername());
                 }
+
                 if(user.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 } else {

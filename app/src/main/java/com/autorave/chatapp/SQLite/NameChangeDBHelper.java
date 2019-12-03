@@ -80,7 +80,7 @@ public final class NameChangeDBHelper extends SQLiteOpenHelper {
         ArrayList<String>UsersInfo = new ArrayList<>();
         Log.d("MarcusTag","In sql method");
 
-        Cursor cursor = mDatabas.query(
+        /*Cursor cursor = mDatabas.query(
                 NameChangeDBHelper.TABLE_NAME,
                 null,
                 null,
@@ -88,16 +88,30 @@ public final class NameChangeDBHelper extends SQLiteOpenHelper {
                 null,
                 null,
                 null
-        );
-        if(cursor.getCount() > 0){
+        );*/
+
+        Cursor cursor = mDatabas.rawQuery("SELECT * FROM nicknameTable", null);
+
+        /*if(cursor.getCount() > 0){
             while (cursor.moveToNext()){
                 String nickname = cursor.getString(cursor.getColumnIndex(NameChangeDBHelper.COLUMN_NAME_NICKNAME));
                 String userId = cursor.getString(cursor.getColumnIndex(NameChangeDBHelper.USER_ID));
                 UsersInfo.add(nickname);
                 UsersInfo.add(userId);
             }
+        }*/
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String nickname = cursor.getString(cursor.getColumnIndex(COLUMN_NAME_NICKNAME));
+                String id = cursor.getString(cursor.getColumnIndex(USER_ID));
+
+                UsersInfo.add(nickname);
+                UsersInfo.add(id);
+
+                cursor.moveToNext();
+            }
         }
-        Log.d("Autorave", UsersInfo.get(0) + " " + UsersInfo.get(1));
         return UsersInfo;
     }
 }

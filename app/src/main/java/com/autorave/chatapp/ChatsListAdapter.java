@@ -56,11 +56,16 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
         ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
 
-        if (SQLData != null && SQLData.get(1).equals(user.getId())) {
-            holder.mUserName.setText(SQLData.get(0));
-        } else {
+        for (int i = 0; i < SQLData.size(); i++) {
+            if (SQLData != null && SQLData.get(i).equals(user.getId())) {
+                holder.mUserName.setText(SQLData.get(i-1));
+            }
+        }
+
+        if (holder.mUserName.getText().length() <= 0) {
             holder.mUserName.setText(user.getUsername());
         }
+
 
         if (user.getImageURL().equals("default")) {
             holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
