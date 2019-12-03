@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/nickname_dialog_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/edit_nickname_info"
+        android:textSize="14sp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"/>
+
+    <EditText
+        android:id="@+id/nickname_dialog_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nickname_dialog_info"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:textSize="14sp"
+        android:padding="5dp"
+        android:background="@drawable/search_bg"
+        android:backgroundTint="@color/text_white"
+        android:hint="@string/nickname"/>
+
+</RelativeLayout>
