@@ -1,4 +1,4 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,14 +22,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.autorave.chatapp.Adapters.ChatAdapter;
 import com.autorave.chatapp.Notifications.APIService;
 import com.autorave.chatapp.Notifications.Client;
 import com.autorave.chatapp.Notifications.Data;
 import com.autorave.chatapp.Notifications.MyResponse;
 import com.autorave.chatapp.Notifications.Sender;
 import com.autorave.chatapp.Notifications.Token;
+import com.autorave.chatapp.R;
 import com.autorave.chatapp.SQLite.ContactsProfileActivity;
 import com.autorave.chatapp.SQLite.NameChangeDBHelper;
+import com.autorave.chatapp.Templates.ChatInfo;
+import com.autorave.chatapp.Templates.User;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,7 +46,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLData;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

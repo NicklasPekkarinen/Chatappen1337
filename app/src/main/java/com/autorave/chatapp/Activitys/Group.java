@@ -1,4 +1,4 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Activitys;
 
 import java.util.List;
 

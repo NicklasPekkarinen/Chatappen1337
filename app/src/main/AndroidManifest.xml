@@ -15,18 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".SQLite.ContactsProfileActivity"></activity>
-        <activity android:name=".GroupChatPage" />
+        <activity android:name=".Activitys.GroupChatPage" />
         <activity
-            android:name=".ChatPage"
+            android:name=".Activitys.ChatPage"
             android:label="Chat"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".SignUpActivity" />
+            android:parentActivityName=".Activitys.MainActivity" />
+        <activity android:name=".Activitys.ForgotPasswordActivity" />
+        <activity android:name=".Activitys.SignUpActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activitys.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activitys.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

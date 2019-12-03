@@ -1,8 +1,10 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.autorave.chatapp.R;
 
 public class NewMessage extends AppCompatActivity {
 

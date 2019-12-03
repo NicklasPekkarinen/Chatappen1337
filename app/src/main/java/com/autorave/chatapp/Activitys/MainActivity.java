@@ -1,4 +1,4 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Activitys;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.autorave.chatapp.Fragments.ChatsFragment;
+import com.autorave.chatapp.Fragments.ContactsFragment;
+import com.autorave.chatapp.GroupChatsFragment;
+import com.autorave.chatapp.Fragments.NewMessageFragment;
+import com.autorave.chatapp.R;
+import com.autorave.chatapp.Templates.User;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;

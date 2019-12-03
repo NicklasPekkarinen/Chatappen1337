@@ -1,4 +1,4 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.autorave.chatapp.Activitys.ChatPage;
+import com.autorave.chatapp.R;
 import com.autorave.chatapp.SQLite.NameChangeDBHelper;
+import com.autorave.chatapp.Templates.User;
 import com.bumptech.glide.Glide;
 
-import java.sql.SQLData;
 import java.util.ArrayList;
 import java.util.List;
 

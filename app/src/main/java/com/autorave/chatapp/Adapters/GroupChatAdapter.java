@@ -1,4 +1,4 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.autorave.chatapp.Templates.GroupChatInfo;
+import com.autorave.chatapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

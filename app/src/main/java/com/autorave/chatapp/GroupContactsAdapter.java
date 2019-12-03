@@ -12,10 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.autorave.chatapp.Activitys.ChatPage;
 import com.autorave.chatapp.SQLite.NameChangeDBHelper;
+import com.autorave.chatapp.Templates.User;
 import com.bumptech.glide.Glide;
 
-import java.sql.SQLData;
 import java.util.ArrayList;
 import java.util.List;
 

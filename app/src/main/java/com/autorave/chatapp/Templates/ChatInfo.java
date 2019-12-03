@@ -1,22 +1,22 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Templates;
 
-import java.util.List;
-
-public class GroupChatInfo {
+public class ChatInfo {
 
     private String sender;
-    private List<String> receivers;
+    private String receiver;
     private String message;
     private boolean isseen;
 
-    public GroupChatInfo(String sender, List<String> receivers, String message, boolean isseen) {
+    public ChatInfo(String sender, String receiver, String message, boolean isseen) {
         this.sender = sender;
-        this.receivers = receivers;
+        this.receiver = receiver;
         this.message = message;
         this.isseen = isseen;
     }
 
-    public GroupChatInfo() {}
+    public ChatInfo(){
+
+    }
 
     public String getSender() {
         return sender;
@@ -26,12 +26,12 @@ public class GroupChatInfo {
         this.sender = sender;
     }
 
-    public List<String> getReceivers() {
-        return receivers;
+    public String getReceiver() {
+        return receiver;
     }
 
-    public void setReceivers(List<String> receivers) {
-        this.receivers = receivers;
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
     public String getMessage() {
@@ -49,5 +49,4 @@ public class GroupChatInfo {
     public void setIsseen(boolean isseen) {
         this.isseen = isseen;
     }
-
 }

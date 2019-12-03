@@ -1,10 +1,9 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Activitys;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.autorave.chatapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         //Checks if a user is already logged in and skips LoginActivity
         user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null && user.isEmailVerified()){
-            Intent intent = new Intent(this,MainActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             this.finish();
         }
@@ -120,13 +120,13 @@ public class LoginActivity extends AppCompatActivity {
     }
     //onClick textview to sign up
     public void toSignUp(View view){
-        Intent intent = new Intent(LoginActivity.this,SignUpActivity.class);
+        Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
         startActivity(intent);
         finish();
     }
     //onClick textview to forgot email activity
     public void forgotPassword(View view) {
-        Intent intent = new Intent(LoginActivity.this,ForgotPasswordActivity.class);
+        Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
         startActivity(intent);
         finish();
     }
