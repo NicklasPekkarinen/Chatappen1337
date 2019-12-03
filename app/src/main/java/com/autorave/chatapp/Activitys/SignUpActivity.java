@@ -1,4 +1,4 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +14,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.autorave.chatapp.R;
+import com.autorave.chatapp.Templates.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -117,7 +119,7 @@ public class SignUpActivity extends AppCompatActivity {
                             }
                         });
                         //back to Login screen after successful sign up
-                        Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
+                        Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
                     }

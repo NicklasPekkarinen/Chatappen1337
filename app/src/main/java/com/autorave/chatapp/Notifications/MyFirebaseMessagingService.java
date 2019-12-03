@@ -13,7 +13,7 @@ import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
-import com.autorave.chatapp.MainActivity;
+import com.autorave.chatapp.Activitys.MainActivity;
 import com.autorave.chatapp.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

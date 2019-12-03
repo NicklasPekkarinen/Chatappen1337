@@ -1,19 +1,24 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.autorave.chatapp.Adapters.ContactsListAdapter;
+import com.autorave.chatapp.NewGroupFragment;
+import com.autorave.chatapp.R;
+import com.autorave.chatapp.Templates.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,13 +34,17 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ContactsFragment extends Fragment {
+public class NewMessageFragment extends Fragment {
 
+    private TextView cancelBtn;
+    private RelativeLayout newGroupBtn;
+    private SearchView searchView;
     private RecyclerView recyclerView;
     private ContactsListAdapter contactsListAdapter;
     private List<User> mContacts;
 
-    public ContactsFragment() {
+
+    public NewMessageFragment() {
         // Required empty public constructor
     }
 
@@ -43,9 +52,42 @@ public class ContactsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_contacts, container, false);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_new_message, container, false);
 
-        recyclerView = view.findViewById(R.id.contacts_list);
+        cancelBtn = view.findViewById(R.id.cancel_new_message);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().replace(R.id.frame_layout, new ChatsFragment()).remove(NewMessageFragment.this).commit();
+            }
+        });
+
+        searchView = view.findViewById(R.id.search_new_message);
+        searchView.setIconified(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                contactsListAdapter.filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                contactsListAdapter.filter(newText);
+                return false;
+            }
+        });
+
+        newGroupBtn = view.findViewById(R.id.new_group_clickable_area);
+        newGroupBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().beginTransaction().replace(R.id.drawer_layout, new NewGroupFragment(), null).commit();
+            }
+        });
+
+        recyclerView = view.findViewById(R.id.contacts_new_message);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -85,14 +127,6 @@ public class ContactsFragment extends Fragment {
 
             }
         });
-
-    }
-
-    public void getFilter(String filter) {
-
-        Log.d("Autorave", "get filter");
-        contactsListAdapter.filter(filter);
-
     }
 
 }

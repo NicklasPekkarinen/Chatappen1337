@@ -1,6 +1,5 @@
-package com.autorave.chatapp;
+package com.autorave.chatapp.Fragments;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,7 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.autorave.chatapp.Adapters.ChatsListAdapter;
 import com.autorave.chatapp.Notifications.Token;
+import com.autorave.chatapp.R;
+import com.autorave.chatapp.Templates.ChatInfo;
+import com.autorave.chatapp.Templates.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
