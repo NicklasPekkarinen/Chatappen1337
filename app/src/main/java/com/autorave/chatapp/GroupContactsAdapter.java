@@ -2,6 +2,7 @@ package com.autorave.chatapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,15 +59,19 @@ public class GroupContactsAdapter extends RecyclerView.Adapter<GroupContactsAdap
 
         nameChangeDBHelper = new NameChangeDBHelper(mContext);
 
-        //ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
+        ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
 
         final User user = mContacts.get(position);
 
-        /*if (SQLData != null && SQLData.get(1).equals(user.getId())) {
-            holder.mUserName.setText(SQLData.get(0));
-        } else {
+        for (int i = 0; i < SQLData.size(); i++) {
+            if (SQLData != null && SQLData.get(i).equals(user.getId())) {
+                holder.mUserName.setText(SQLData.get(i-1));
+            }
+        }
+        if (holder.mUserName.getText().length() <= 0) {
+            Log.d("Autorave", user.getUsername());
             holder.mUserName.setText(user.getUsername());
-        }*/
+        }
 
         if (user.getImageURL().equals("default")) {
             holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
