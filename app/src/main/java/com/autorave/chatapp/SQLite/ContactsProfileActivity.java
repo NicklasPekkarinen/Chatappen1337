@@ -109,6 +109,6 @@ public class ContactsProfileActivity extends AppCompatActivity implements Nickna
         SQLSETDATA.add(user.getId());
         nameChangeDBHelper.setDataSQL(SQLSETDATA);
         ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
-        //userName.setText(SQLData.get(0));
+        userName.setText(SQLData.get(0));
     }
 }

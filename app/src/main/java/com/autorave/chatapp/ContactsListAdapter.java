@@ -49,13 +49,13 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 
         final User user = mContacts.get(position);
 
-        //ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
+        ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
 
-        /*if (SQLData != null && SQLData.get(1).equals(user.getId())) {
+        if (SQLData != null && SQLData.get(1).equals(user.getId())) {
             holder.mUserName.setText(SQLData.get(0));
         } else {
             holder.mUserName.setText(user.getUsername());
-        }*/
+        }
 
         if (user.getImageURL().equals("default")) {
             holder.mUserImage.setImageResource(R.mipmap.ic_launcher);

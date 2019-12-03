@@ -24,6 +24,7 @@ public final class NameChangeDBHelper extends SQLiteOpenHelper {
             public static final String ID = "_ID";
             public static final String USER_ID = "userId";
             public static final String COLUMN_NAME_NICKNAME = "nickName";
+            private int counter = 0;
 
         private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TABLE_NAME + " (" +
@@ -66,8 +67,9 @@ public final class NameChangeDBHelper extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put("nickname", userInfo.get(0));
             cv.put("userId", userInfo.get(1));
+            counter++;
             //mDatabas.delete(TABLE_NAME,"userId" + "='" +userInfo.get(1)+"'",null);
-            String query = "INSERT INTO nicknameTable VALUES ('" + userInfo.get(1) + "','" + userInfo.get(0) + "')";
+            String query = "INSERT INTO nicknameTable (userId, nickname) VALUES ('" + userInfo.get(1) + "','" + userInfo.get(0) + "')";
             mDatabas.execSQL(query);
 
             //mDatabas.insert("nicknameTable", null, cv);
@@ -95,6 +97,7 @@ public final class NameChangeDBHelper extends SQLiteOpenHelper {
                 UsersInfo.add(userId);
             }
         }
+        Log.d("Autorave", UsersInfo.get(0) + " " + UsersInfo.get(1));
         return UsersInfo;
     }
 }
