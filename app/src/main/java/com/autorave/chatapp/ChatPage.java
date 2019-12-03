@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +21,8 @@ import com.autorave.chatapp.Notifications.Data;
 import com.autorave.chatapp.Notifications.MyResponse;
 import com.autorave.chatapp.Notifications.Sender;
 import com.autorave.chatapp.Notifications.Token;
+import com.autorave.chatapp.SQLite.ContactsProfileActivity;
+import com.autorave.chatapp.SQLite.NameChangeDBHelper;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,6 +43,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChatPage extends AppCompatActivity {
+
+    NameChangeDBHelper nameChangeDBHelper;
 
     CircleImageView profile_image;
     TextView username;
@@ -74,6 +77,9 @@ public class ChatPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_page);
+
+        nameChangeDBHelper = new NameChangeDBHelper(this);
+        //final ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
 
         recyclerView = findViewById(R.id.id_text);
         recyclerView.setHasFixedSize(true);
@@ -123,7 +129,11 @@ public class ChatPage extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                username.setText(user.getUsername());
+                /*if (SQLData != null && SQLData.get(1).equals(user.getId())) {
+                    username.setText(SQLData.get(0));
+                } else {
+                    username.setText(user.getUsername());
+                }*/
                 if(user.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 } else {

@@ -65,6 +65,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         holder.showMessage.setText(chatInfo.getMessage());
 
+        if(imageUrl.equals("default")){
+            holder.profileImage.setImageResource(R.mipmap.ic_launcher);
+        } else {
+            Glide.with(mContext).load(imageUrl).into(holder.profileImage);
+        }
+
         if(position == chat.size()-1){
           if(chatInfo.isIsseen()){
               holder.msgSeen.setText("Seen");
@@ -75,11 +81,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder.msgSeen.setVisibility(View.GONE);
         }
 
-        if(imageUrl.equals("default")){
-            holder.profileImage.setImageResource(R.mipmap.ic_launcher);
-        } else {
-            Glide.with(mContext).load(imageUrl).into(holder.profileImage);
-        }
 
     }
 
@@ -93,7 +94,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         public TextView showMessage;
         public ImageView profileImage;
         public TextView msgSeen;
-        RelativeLayout msgLayout;
+        //RelativeLayout msgLayout;
 
         public ViewHolder(View itemView) {
                 super(itemView);

@@ -2,6 +2,7 @@ package com.autorave.chatapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.autorave.chatapp.SQLite.NameChangeDBHelper;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,13 +23,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.ViewHolder> {
 
+    NameChangeDBHelper nameChangeDBHelper;
     private Context mContext;
     private List<User> mContacts;
     private String lastMessage;
+    public boolean bold = true;
 
     public ChatsListAdapter(List<User> mContacts, Context mContext) {
         this.mContext = mContext;
@@ -45,8 +50,17 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
+        nameChangeDBHelper = new NameChangeDBHelper(mContext);
+
         final User user = mContacts.get(position);
-        holder.mUserName.setText(user.getUsername());
+
+        //ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
+
+        /*if (SQLData != null && SQLData.get(1).equals(user.getId())) {
+            holder.mUserName.setText(SQLData.get(0));
+        } else {
+            holder.mUserName.setText(user.getUsername());
+        }*/
 
         if (user.getImageURL().equals("default")) {
             holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
@@ -96,6 +110,9 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     }
 
     private void lastMsg(final String userId, final TextView mLastMsg) {
+        if(bold){
+            mLastMsg.setTypeface(null, Typeface.BOLD);
+        }
         lastMessage = "default";
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Chats");

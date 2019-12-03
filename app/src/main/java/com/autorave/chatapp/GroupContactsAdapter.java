@@ -12,13 +12,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.autorave.chatapp.SQLite.NameChangeDBHelper;
 import com.bumptech.glide.Glide;
 
+import java.sql.SQLData;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GroupContactsAdapter extends RecyclerView.Adapter<GroupContactsAdapter.ViewHolder> {
 
+    NameChangeDBHelper nameChangeDBHelper;
     private Context mContext;
     private List<User> mContacts;
     private List<User> copyContacts;
@@ -53,8 +56,17 @@ public class GroupContactsAdapter extends RecyclerView.Adapter<GroupContactsAdap
     @Override
     public void onBindViewHolder(@NonNull final GroupContactsAdapter.ViewHolder holder, int position) {
 
+        nameChangeDBHelper = new NameChangeDBHelper(mContext);
+
+        //ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
+
         final User user = mContacts.get(position);
-        holder.mUserName.setText(user.getUsername());
+
+        /*if (SQLData != null && SQLData.get(1).equals(user.getId())) {
+            holder.mUserName.setText(SQLData.get(0));
+        } else {
+            holder.mUserName.setText(user.getUsername());
+        }*/
 
         if (user.getImageURL().equals("default")) {
             holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
