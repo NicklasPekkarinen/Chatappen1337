@@ -42,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLData;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -148,11 +149,12 @@ public class ChatPage extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                /*if (SQLData != null && SQLData.get(1).equals(user.getId())) {
+                ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
+                if (SQLData != null && SQLData.get(1).equals(user.getId())) {
                     username.setText(SQLData.get(0));
                 } else {
                     username.setText(user.getUsername());
-                }*/
+                }
                 if(user.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 } else {

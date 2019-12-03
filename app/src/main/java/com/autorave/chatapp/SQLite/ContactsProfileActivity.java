@@ -65,13 +65,13 @@ public class ContactsProfileActivity extends AppCompatActivity implements Nickna
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
-                //ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
+                ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
 
-                /*if (SQLData != null && SQLData.get(1).equals(user.getId())) {
+                if (SQLData != null && SQLData.get(1).equals(user.getId())) {
                     userName.setText(SQLData.get(0));
                 } else {
                     userName.setText(user.getUsername());
-                }*/
+                }
 
                 userEmail.setText(user.getEmail());
 
