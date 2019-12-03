@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
     private DatabaseReference databaseReference;
     private androidx.appcompat.widget.SearchView searchView;
     private ContactsFragment fragment;
+    private FloatingActionButton fab;
     private NavigationView navigationView;
 
     StorageReference storageReference;
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fab = findViewById(R.id.floatingActionButton2);
         bottomNav = findViewById(R.id.bottom_nav);
         frameLayout = findViewById(R.id.frame_layout);
         profileImage = findViewById(R.id.profile_image);
@@ -131,6 +134,14 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+
+        fab.bringToFront();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.drawer_layout, new NewMessageFragment(), null).commit();
             }
         });
 
@@ -297,5 +308,10 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
     protected void onPause() {
         super.onPause();
         status("offline");
+    }
+
+    public void newMessage(View view) {
+        Log.d("Autorave", "hej");
+        getSupportFragmentManager().beginTransaction().replace(R.id.drawer_layout, new NewMessageFragment(), null).commit();
     }
 }

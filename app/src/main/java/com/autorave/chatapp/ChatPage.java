@@ -104,6 +104,15 @@ public class ChatPage extends AppCompatActivity {
             }
         });
 
+        profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChatPage.this, ContactsProfileActivity.class);
+                intent.putExtra("userId", userId);
+                startActivity(intent);
+            }
+        });
+
 
         reference = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
@@ -152,8 +161,6 @@ public class ChatPage extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     private void sendMessage(String sender, final String receiver, String message){

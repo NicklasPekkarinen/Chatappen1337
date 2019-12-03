@@ -1,84 +1,63 @@
 package com.autorave.chatapp;
 
-
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
 import java.util.List;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
+public class GroupChatAdapter extends RecyclerView.Adapter<GroupChatAdapter.ViewHolder> {
 
     public static final int DISPLAY_LEFT = 0;
     public static final int DISPLAY_RIGHT = 1;
 
     private Context mContext;
-    private List<ChatInfo> chat;
-    private String imageUrl;
-
+    private List<GroupChatInfo> chat;
 
     private FirebaseUser firebaseUser;
 
-    public ChatAdapter(Context mContext, List<ChatInfo> chat, String imageUrl){
+    public GroupChatAdapter(Context mContext, List<GroupChatInfo> chat){
         this.chat = chat;
         this.mContext = mContext;
-        this.imageUrl = imageUrl;
+
     }
 
     @NonNull
     @Override
-    public ChatAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GroupChatAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(viewType == DISPLAY_RIGHT){
             View view = LayoutInflater.from(mContext).inflate(R.layout.chat_right, parent, false);
-            return new ChatAdapter.ViewHolder(view);
+            return new GroupChatAdapter.ViewHolder(view);
         } else{
             View view = LayoutInflater.from(mContext).inflate(R.layout.chat_left, parent, false);
-            return new ChatAdapter.ViewHolder(view);
+            return new GroupChatAdapter.ViewHolder(view);
         }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChatAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull GroupChatAdapter.ViewHolder holder, int position) {
 
-        ChatInfo chatInfo = chat.get(position);
+        GroupChatInfo groupChatInfo = chat.get(position);
 
-        holder.showMessage.setText(chatInfo.getMessage());
+        holder.showMessage.setText(groupChatInfo.getMessage());
 
         if(position == chat.size()-1){
-          if(chatInfo.isIsseen()){
-              holder.msgSeen.setText("Seen");
-          } else {
-              holder.msgSeen.setText("Delivered");
-          }
+            if(groupChatInfo.isIsseen()){
+                holder.msgSeen.setText("Seen");
+            } else {
+                holder.msgSeen.setText("Delivered");
+            }
         } else {
             holder.msgSeen.setVisibility(View.GONE);
-        }
-
-        if(imageUrl.equals("default")){
-            holder.profileImage.setImageResource(R.mipmap.ic_launcher);
-        } else {
-            Glide.with(mContext).load(imageUrl).into(holder.profileImage);
         }
 
     }
@@ -93,16 +72,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         public TextView showMessage;
         public ImageView profileImage;
         public TextView msgSeen;
-        RelativeLayout msgLayout;
+
 
         public ViewHolder(View itemView) {
-                super(itemView);
+            super(itemView);
 
             showMessage = itemView.findViewById(R.id.show_message);
             profileImage = itemView.findViewById(R.id.profile_image);
             msgSeen = itemView.findViewById(R.id.message_seen);
-            //msgLayout = itemView.findViewById(R.id.msg_layout);
         }
+
+
     }
 
     @Override
@@ -114,6 +94,5 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             return DISPLAY_LEFT;
         }
     }
-
 
 }
