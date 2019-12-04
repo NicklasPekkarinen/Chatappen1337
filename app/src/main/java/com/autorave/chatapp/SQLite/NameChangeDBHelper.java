@@ -12,17 +12,13 @@ import java.util.List;
 
 public final class NameChangeDBHelper extends SQLiteOpenHelper {
 
-        // To prevent someone from accidentally instantiating the contract class,
-        // make the constructor private.
-
-
-
+            // Database colums
             public static final String TABLE_NAME = "nicknameTable";
             public static final String ID = "_ID";
             public static final String USER_ID = "userId";
             public static final String COLUMN_NAME_NICKNAME = "nickName";
-            private int counter = 0;
 
+        //Creates Database
         private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TABLE_NAME + " (" +
                     ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -44,7 +40,7 @@ public final class NameChangeDBHelper extends SQLiteOpenHelper {
             dbSQLite.execSQL(SQL_CREATE_ENTRIES);
 
         }
-
+        // Uppdaterar databasen
         public void onUpgrade(SQLiteDatabase dbSQLite, int i, int i1) {
             dbSQLite.execSQL(SQL_DELETE_ENTRIES);
             onCreate(dbSQLite);
@@ -53,50 +49,20 @@ public final class NameChangeDBHelper extends SQLiteOpenHelper {
             onUpgrade(db, oldVersion, newVersion);
         }
 
-        public void insertNickName(){
-            SQLiteDatabase db = getWritableDatabase();
-            ContentValues values = new ContentValues();
-
-        }
-
+        //Set values to databas on a spicific user
         public void setDataSQL(List<String> userInfo) {
             SQLiteDatabase mDatabas = getWritableDatabase();
-            ContentValues cv = new ContentValues();
-            cv.put("nickname", userInfo.get(0));
-            cv.put("userId", userInfo.get(1));
-            counter++;
-            //mDatabas.delete(TABLE_NAME,"userId" + "='" +userInfo.get(1)+"'",null);
+
             String query = "INSERT INTO nicknameTable (userId, nickname) VALUES ('" + userInfo.get(1) + "','" + userInfo.get(0) + "')";
             mDatabas.execSQL(query);
-
-            //mDatabas.insert("nicknameTable", null, cv);
-            Log.d("MarcusTag", mDatabas.toString());
         }
+
+        //Gets data from database and displays Nickname on specific person in contacts list
     public List<String> getDataSQL(){
         SQLiteDatabase mDatabas = getReadableDatabase();
         ArrayList<String>UsersInfo = new ArrayList<>();
-        Log.d("MarcusTag","In sql method");
-
-        /*Cursor cursor = mDatabas.query(
-                NameChangeDBHelper.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );*/
 
         Cursor cursor = mDatabas.rawQuery("SELECT * FROM nicknameTable", null);
-
-        /*if(cursor.getCount() > 0){
-            while (cursor.moveToNext()){
-                String nickname = cursor.getString(cursor.getColumnIndex(NameChangeDBHelper.COLUMN_NAME_NICKNAME));
-                String userId = cursor.getString(cursor.getColumnIndex(NameChangeDBHelper.USER_ID));
-                UsersInfo.add(nickname);
-                UsersInfo.add(userId);
-            }
-        }*/
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {

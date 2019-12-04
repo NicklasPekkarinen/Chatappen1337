@@ -37,9 +37,6 @@ public class ContactsProfileActivity extends AppCompatActivity implements Nickna
     private FirebaseUser fbUser;
     private DatabaseReference dbRef;
     private User user;
-    private String SQLUserID;
-    private String SQLNickname;
-    private Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +59,8 @@ public class ContactsProfileActivity extends AppCompatActivity implements Nickna
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
-                ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
 
+                ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
                 for (int i = 0; i < SQLData.size(); i++) {
                     if (SQLData != null && SQLData.get(i).equals(user.getId())) {
                         userName.setText(SQLData.get(i-1));
