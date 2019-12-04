@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activitys.SignUpActivity"
-    android:background="@color/colorPrimaryDark" >
+    android:background="@color/colorPrimaryDark"
+    tools:context=".Activitys.SignUpActivity">
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="match_parent"
         android:layout_height="249dp"
-        android:src="@mipmap/chatapplogo3"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:src="@mipmap/chatapplogo3" />
 
     <RelativeLayout
         android:id="@+id/relative_2"
@@ -23,43 +23,44 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp">
 
-    <EditText
-        android:id="@+id/edit_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:hint="@string/email"
-        android:textColorHint="@color/text_white"
-        android:textColor="@color/text_white" />
+        <EditText
+            android:id="@+id/edit_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="@string/email"
+            android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white" />
 
-    <EditText
-        android:id="@+id/user_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:hint="@string/username"
-        android:textColorHint="@color/text_white"
-        android:textColor="@color/text_white"
-        android:layout_below="@id/edit_email"/>
-    <EditText
-        android:id="@+id/edit_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:textColorHint="@color/text_white"
-        android:textColor="@color/text_white"
-        android:layout_below="@id/user_name"/>
+        <EditText
+            android:id="@+id/user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_email"
+            android:layout_marginTop="20dp"
+            android:hint="@string/username"
+            android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white" />
 
-    <CheckBox
-        android:id="@+id/check_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_password"
-        android:buttonTint="@color/text_white"
-        android:text="@string/show_password_checkbox"
-        android:textColor="@color/text_white" />
+        <EditText
+            android:id="@+id/edit_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_name"
+            android:layout_marginTop="20dp"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white" />
+
+        <CheckBox
+            android:id="@+id/check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_password"
+            android:buttonTint="@color/text_white"
+            android:text="@string/show_password_checkbox"
+            android:textColor="@color/text_white" />
     </RelativeLayout>
 
 
@@ -71,18 +72,20 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
+        android:onClick="signUp"
         android:text="@string/sign_up"
-        android:onClick="signUp"/>
+        android:textColor="@color/text_white" />
+
     <TextView
         android:id="@+id/text_signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/back_to_login_page"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/button_sign_up"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp"
-        android:textColor="@color/text_white"
-        android:onClick="backToLogin"/>
+        android:onClick="backToLogin"
+        android:text="@string/back_to_login_page"
+        android:textColor="@color/text_white" />
 
 
 </RelativeLayout>

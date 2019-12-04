@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activitys.LoginActivity"
-    android:background="@color/colorPrimaryDark" >
+    android:background="@color/colorPrimaryDark"
+    tools:context=".Activitys.LoginActivity">
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="match_parent"
         android:layout_height="249dp"
-        android:src="@mipmap/chatapplogo3"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:src="@mipmap/chatapplogo3" />
 
 
     <RelativeLayout
@@ -24,45 +24,45 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp">
 
-    <EditText
-        android:id="@+id/edit_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:hint="@string/email"
-        android:textColorHint="@color/text_white"
-        android:textColor="@color/text_white" />
+        <EditText
+            android:id="@+id/edit_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="@string/email"
+            android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white" />
 
-    <EditText
-        android:id="@+id/edit_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:textColorHint="@color/text_white"
-        android:textColor="@color/text_white"
-        android:layout_below="@id/edit_email"/>
+        <EditText
+            android:id="@+id/edit_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_email"
+            android:layout_marginTop="40dp"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white" />
 
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/show_password_checkbox"
-        android:layout_below="@+id/edit_password"
-        android:textColor="@color/text_white"
-        android:buttonTint="@color/text_white" />
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_password"
+            android:buttonTint="@color/text_white"
+            android:text="@string/show_password_checkbox"
+            android:textColor="@color/text_white" />
 
-    <TextView
-        android:id="@+id/forgot_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/forgot_your_password_press_here"
-        android:layout_below="@id/checkbox"
-        android:textColor="@color/text_white"
-        android:onClick="forgotPassword"/>
+        <TextView
+            android:id="@+id/forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/checkbox"
+            android:onClick="forgotPassword"
+            android:text="@string/forgot_your_password_press_here"
+            android:textColor="@color/text_white" />
 
-</RelativeLayout>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/button_login"
@@ -72,19 +72,20 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:background="@color/colorPrimary"
+        android:onClick="loginProses"
         android:text="@string/login"
-        android:onClick="loginProses"/>
+        android:textColor="@color/text_white" />
 
     <TextView
         android:id="@+id/text_signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sign_up_click_hear"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/button_login"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:textColor="@color/text_white"
-        android:onClick="toSignUp"/>
+        android:onClick="toSignUp"
+        android:text="@string/sign_up_click_hear"
+        android:textColor="@color/text_white" />
 
 
 </RelativeLayout>
