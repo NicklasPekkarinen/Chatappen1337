@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,6 +24,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -42,6 +45,11 @@ import com.autorave.chatapp.SQLite.NameChangeDBHelper;
 import com.autorave.chatapp.Templates.ChatInfo;
 import com.autorave.chatapp.Templates.User;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,7 +58,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -68,6 +81,9 @@ import retrofit2.Response;
 public class ChatPage extends AppCompatActivity {
 
     NameChangeDBHelper nameChangeDBHelper;
+    ImageView image_send;
+    ImageView Image_receive;
+    StorageReference storageReference;
 
     CircleImageView profile_image;
     TextView username;
@@ -77,11 +93,14 @@ public class ChatPage extends AppCompatActivity {
     List<ChatInfo> chat;
     RecyclerView recyclerView;
     ImageView imageView;
-    private String filepath; //För att hålla koll på sökväen
+    String userId;
     private int REQUEST_PICTURE_CAPTURE = 1;
+    Bitmap sentPhotoBitmap;
+    private String mUri;
 
     ImageButton btnSend;
     EditText messageSend;
+    private String filepath;
 
     ChatAdapter chatAdapter;
 
@@ -90,20 +109,24 @@ public class ChatPage extends AppCompatActivity {
     Intent intent;
 
     String userid;
+    private DatabaseReference databaseReference;
     Boolean notify = false;
     APIService apiService;
 
    private int STORAGE_PERMISSION_CODE = 1;
    private int CAMERA_PERMISSION_CODE = 10;
 
+    private StorageTask uploadTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_page);
 
+        storageReference = FirebaseStorage.getInstance().getReference("camerapics");
+
         nameChangeDBHelper = new NameChangeDBHelper(this);
-        //final ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
+
 
         recyclerView = findViewById(R.id.id_text);
         recyclerView.setHasFixedSize(true);
@@ -118,7 +141,7 @@ public class ChatPage extends AppCompatActivity {
         messageSend = findViewById(R.id.message_send);
 
         intent = getIntent();
-        final String userId = intent.getStringExtra("userId");
+        userId = intent.getStringExtra("userId");
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         camera_button = findViewById(R.id.camera_button);
@@ -256,44 +279,11 @@ public class ChatPage extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Kolla att result code överenstämmer med den vi skickade
 
         if (requestCode == REQUEST_PICTURE_CAPTURE && resultCode == RESULT_OK) {
-            if (resultCode == RESULT_OK){
 
-                // Få Imageview dimensioner
-
-                int imageViewWidth = imageView.getWidth();
-                int imageViewHeight = imageView.getHeight();
-                String log = "Imageview Width: " + imageViewWidth + " ImageView height: " + imageViewHeight;
-
-                // Skapa Bitmap options så att de endast kan vara så stora som imageview
-
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(filepath, options);
-
-                // Beräkna bildens skala
-
-                int scaleFactor = Math.min(options.outWidth / imageViewWidth, options.outHeight / imageViewHeight);
-                String log3 = "options out. Width:: " + options.outWidth + "  height: " + options.outHeight;
-                Log.d("TAG", log3);
-
-                // Reset options to a new object and apply the scale
-
-                options = new BitmapFactory.Options();
-                options.inSampleSize = scaleFactor;
-
-                // Decode the image
-
-                Bitmap image = BitmapFactory.decodeFile(filepath, options);
-                String log2 = "Image Width: " + image.getWidth() + " Image height: " + image.getHeight();
-                Log.d("TAG", log2);
-
-                // Set image to imageView
-
-                imageView.setImageBitmap(image);
-            }
+                sentPhotoBitmap = (Bitmap) data.getExtras().get("data");
+                uploadImage(sentPhotoBitmap);
         }
     }
 
@@ -301,29 +291,8 @@ public class ChatPage extends AppCompatActivity {
 
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
+        startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
 
-            File pictureFile = null;
-
-            try {
-                pictureFile = getPictureFile();
-            } catch (IOException ex) {
-                Toast.makeText(this,
-                        "Photo cannot be generated, pls try again",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (pictureFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        pictureFile);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
-
-            }
-        }
     }
     private File getPictureFile() throws IOException {
         String timeStamp = new SimpleDateFormat("ddmmyyyyhhmmss", Locale.getDefault()).format(new Date());
@@ -341,6 +310,53 @@ public class ChatPage extends AppCompatActivity {
         return image;
     } //
 
+    private String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = ChatPage.this.getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void uploadImage(Bitmap bitmap) {
+
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
+        final StorageReference fileReference = storageReference.child(System.currentTimeMillis() + ".JPEG");
+
+        /*uploadTask = fileReference.putBytes(byteArrayOutputStream.toByteArray()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(ChatPage.this, "Photo uploaded.", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ChatPage.this, "Photo failed to upload.", Toast.LENGTH_SHORT).show();
+            }
+        });*/
+
+        uploadTask = fileReference.putBytes(byteArrayOutputStream.toByteArray());
+        uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>> () {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+                return fileReference.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri picuterUri = task.getResult();
+                    mUri = picuterUri.toString();
+                    sendMessage(firebaseUser.getUid(), userId, mUri);
+                }
+            }
+        });
+    }
+
     private void seenMessage(final String userId){
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         seenListener = reference.addValueEventListener(new ValueEventListener() {
@@ -354,7 +370,6 @@ public class ChatPage extends AppCompatActivity {
                         snapshot.getRef().updateChildren(hashMap);
                     }
                 }
-
             }
 
             @Override
