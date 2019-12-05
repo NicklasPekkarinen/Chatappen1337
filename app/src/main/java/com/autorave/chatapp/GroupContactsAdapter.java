@@ -3,6 +3,7 @@ package com.autorave.chatapp;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +45,6 @@ public class GroupContactsAdapter extends RecyclerView.Adapter<GroupContactsAdap
         copyContacts.addAll(mContacts);
     }
 
-
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -56,56 +55,10 @@ public class GroupContactsAdapter extends RecyclerView.Adapter<GroupContactsAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final GroupContactsAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final GroupContactsAdapter.ViewHolder holder, final int position) {
 
-        nameChangeDBHelper = new NameChangeDBHelper(mContext);
+        holder.bind(position);
 
-        ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
-
-        final User user = mContacts.get(position);
-
-        for (int i = 0; i < SQLData.size(); i++) {
-            if (SQLData != null && SQLData.get(i).equals(user.getId())) {
-                holder.mUserName.setText(SQLData.get(i-1));
-            }
-        }
-        if (holder.mUserName.getText().length() <= 0) {
-            Log.d("Autorave", user.getUsername());
-            holder.mUserName.setText(user.getUsername());
-        }
-
-        if (user.getImageURL().equals("default")) {
-            holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
-        } else {
-            Glide.with(mContext).load(user.getImageURL()).into(holder.mUserImage);
-        }
-
-        if (user.getStatus().equals("online")) {
-            holder.mStatus.setVisibility(View.VISIBLE);
-            holder.mStatus.setImageResource(R.color.statusOnline);
-        } else if (user.getStatus().equals("offline")) {
-            holder.mStatus.setVisibility(View.GONE);
-        }
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, ChatPage.class);
-                intent.putExtra("userId", user.getId());
-                mContext.startActivity(intent);
-            }
-        });
-
-        holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.mCheckBox.isChecked()) {
-                    onItemCheckListener.onItemCheck(user);
-                } else {
-                    onItemCheckListener.onItemUncheck(user);
-                }
-            }
-        });
     }
 
     @Override
@@ -113,6 +66,7 @@ public class GroupContactsAdapter extends RecyclerView.Adapter<GroupContactsAdap
         return mContacts.size();
     }
 
+    // --------------------- ViewHolder ------------------- //
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mUserImage;
@@ -129,28 +83,45 @@ public class GroupContactsAdapter extends RecyclerView.Adapter<GroupContactsAdap
             mCheckBox = itemView.findViewById(R.id.group_checkbox);
 
         }
-    }
 
-    public void filter(String text) {
+        void bind(int position) {
+            nameChangeDBHelper = new NameChangeDBHelper(mContext);
 
-        mContacts.clear();
+            ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
 
-        if (text.isEmpty()) {
+            final User user = mContacts.get(position);
 
-            mContacts.addAll(copyContacts);
-
-        } else {
-
-            text = text.toLowerCase();
-
-            for (User user: copyContacts) {
-
-                if (user.getUsername().toLowerCase().contains(text)) {
-                    mContacts.add(user);
+            for (int i = 0; i < SQLData.size(); i++) {
+                if (SQLData != null && SQLData.get(i).equals(user.getId())) {
+                    user.setUsername(SQLData.get(i-1));
                 }
             }
 
+            mUserName.setText(user.getUsername());
+
+            if (user.getImageURL().equals("default")) {
+                mUserImage.setImageResource(R.mipmap.ic_launcher);
+            } else {
+                Glide.with(mContext).load(user.getImageURL()).into(mUserImage);
+            }
+
+            if (user.getStatus().equals("online")) {
+                mStatus.setVisibility(View.VISIBLE);
+                mStatus.setImageResource(R.color.statusOnline);
+            } else if (user.getStatus().equals("offline")) {
+                mStatus.setVisibility(View.GONE);
+            }
+
+            mCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mCheckBox.isChecked()) {
+                        onItemCheckListener.onItemCheck(user);
+                    } else {
+                        onItemCheckListener.onItemUncheck(user);
+                    }
+                }
+            });
         }
-        notifyDataSetChanged();
     }
 }

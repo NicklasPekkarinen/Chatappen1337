@@ -2,6 +2,7 @@ package com.autorave.chatapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,13 +56,11 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 
         for (int i = 0; i < SQLData.size(); i++) {
             if (SQLData != null && SQLData.get(i).equals(user.getId())) {
-                holder.mUserName.setText(SQLData.get(i-1));
+                user.setUsername(SQLData.get(i-1));
             }
         }
 
-        if (holder.mUserName.getText().length() <= 0) {
-            holder.mUserName.setText(user.getUsername());
-        }
+        holder.mUserName.setText(user.getUsername());
 
         if (user.getImageURL().equals("default")) {
             holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
@@ -111,6 +110,8 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 
         mContacts.clear();
 
+        ArrayList<String> SQLData = (ArrayList)nameChangeDBHelper.getDataSQL();
+
         if (text.isEmpty()) {
 
             mContacts.addAll(copyContacts);
@@ -119,13 +120,20 @@ public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapte
 
             text = text.toLowerCase();
 
+            for (int j = 0; j < copyContacts.size(); j++) {
+                for (int i = 0; i < SQLData.size(); i++) {
+                    if (SQLData.get(i).equals(copyContacts.get(j).getId())) {
+                        copyContacts.get(j).setUsername(SQLData.get(i-1));
+                    }
+                }
+            }
+
             for (User user: copyContacts) {
 
                 if (user.getUsername().toLowerCase().contains(text)) {
                     mContacts.add(user);
                 }
             }
-
         }
         notifyDataSetChanged();
     }

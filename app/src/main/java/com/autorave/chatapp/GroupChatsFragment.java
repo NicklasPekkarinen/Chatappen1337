@@ -8,11 +8,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.autorave.chatapp.Activitys.Group;
+import com.autorave.chatapp.Templates.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -57,7 +59,7 @@ public class GroupChatsFragment extends Fragment {
         groupsList = new ArrayList<>();
 
         fbUser = FirebaseAuth.getInstance().getCurrentUser();
-        dbReference = FirebaseDatabase.getInstance().getReference("Users").child(fbUser.getUid()).child("Groups");
+        dbReference = FirebaseDatabase.getInstance().getReference("Users").child(fbUser.getUid()).child("groups");
 
         dbReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -82,34 +84,33 @@ public class GroupChatsFragment extends Fragment {
 
         mGroups = new ArrayList<>();
 
-        for (int i = 0; i < groupsList.size(); i++) {
-            dbReference = FirebaseDatabase.getInstance().getReference("GroupInfo");
-            dbReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    mGroups.clear();
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Group group = snapshot.getValue(Group.class);
+        dbReference = FirebaseDatabase.getInstance().getReference("Groups");
+        dbReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mGroups.clear();
 
-                        for (String id : groupsList) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Group group = snapshot.getValue(Group.class);
 
-                            if (group.getId().equals(id)) {
+                    for (String id : groupsList) {
 
-                                if (!mGroups.contains(group)) {
-                                    mGroups.add(group);
-                                }
+                        if (group.getId().equals(id)) {
+
+                            if (!mGroups.contains(group)) {
+                                mGroups.add(group);
                             }
                         }
                     }
-                    groupChatsListAdapter = new GroupChatsListAdapter(mGroups, getContext());
-                    recyclerView.setAdapter(groupChatsListAdapter);
                 }
+                groupChatsListAdapter = new GroupChatsListAdapter(mGroups, getContext());
+                recyclerView.setAdapter(groupChatsListAdapter);
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
-        }
+            }
+        });
     }
 }

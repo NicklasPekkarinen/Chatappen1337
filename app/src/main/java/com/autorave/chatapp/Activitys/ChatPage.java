@@ -156,13 +156,11 @@ public class ChatPage extends AppCompatActivity {
 
                 for (int i = 0; i < SQLData.size(); i++) {
                     if (SQLData != null && SQLData.get(i).equals(user.getId())) {
-                        username.setText(SQLData.get(i-1));
+                        user.setUsername(SQLData.get(i-1));
                     }
                 }
-                if (username.getText().length() <= 0) {
-                    Log.d("Autorave", user.getUsername());
-                    username.setText(user.getUsername());
-                }
+
+                username.setText(user.getUsername());
 
                 if(user.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);

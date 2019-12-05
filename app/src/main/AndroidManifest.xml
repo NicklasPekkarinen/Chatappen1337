@@ -15,7 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".SQLite.ContactsProfileActivity"></activity>
-        <activity android:name=".Activitys.GroupChatPage" />
+        <activity
+            android:name=".Activitys.GroupChatPage"
+            android:label="Group Chat"
+            android:parentActivityName=".Activitys.MainActivity">
+        </activity>
         <activity
             android:name=".Activitys.ChatPage"
             android:label="Chat"

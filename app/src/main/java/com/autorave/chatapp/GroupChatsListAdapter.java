@@ -22,12 +22,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class GroupChatsListAdapter extends RecyclerView.Adapter<GroupChatsListAdapter.ViewHolder> {
 
     private Context mContext;
     private List<Group> mGroups;
+    private List<String> groupIds;
     private String lastMessage;
 
     public GroupChatsListAdapter(List<Group> mGroups, Context mContext) {
@@ -46,10 +48,16 @@ class GroupChatsListAdapter extends RecyclerView.Adapter<GroupChatsListAdapter.V
     public void onBindViewHolder(@NonNull GroupChatsListAdapter.ViewHolder holder, int position) {
 
         final Group group = mGroups.get(position);
-        holder.mUserName.setText("Group");
+        groupIds = new ArrayList<>();
+
+        holder.mUserName.setText(group.getName());
         holder.mUserImage.setImageResource(R.mipmap.ic_launcher);
 
-        lastMsg(group.getMembers(), holder.mLastMsg);
+        for (int i = 0; i < group.getMembers().size(); i++) {
+            groupIds.add(group.getMembers().get(i).getId());
+        }
+
+        lastMsg(groupIds, holder.mLastMsg);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

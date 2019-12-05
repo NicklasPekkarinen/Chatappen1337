@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -45,7 +46,6 @@ public class GroupChatPage extends AppCompatActivity {
     FirebaseUser firebaseUser;
     DatabaseReference reference;
 
-
     ImageButton btnSend;
     EditText messageSend;
 
@@ -54,11 +54,8 @@ public class GroupChatPage extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
-    ValueEventListener seenListener;
-
     Intent intent;
 
-    String userid;
     Boolean notify = false;
     APIService apiService;
 
@@ -88,13 +85,34 @@ public class GroupChatPage extends AppCompatActivity {
         final String groupId = intent.getStringExtra("groupId");
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        reference = FirebaseDatabase.getInstance().getReference("GroupInfo").child(groupId);
+        reference = FirebaseDatabase.getInstance().getReference("Groups").child(groupId);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Group group = dataSnapshot.getValue(Group.class);
-                listUserIds = group.getMembers();
+                userList = group.getMembers();
+                for (int i = 0; i < userList.size(); i++) {
+                    listUserIds.add(userList.get(i).getId());
+                }
+
+                username.setText(group.getName());
+
+                btnSend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        notify = true;
+                        String msg = messageSend.getText().toString();
+                        if(!msg.equals("")){
+                            listUserIds.remove(firebaseUser.getUid());
+                            sendMessage(firebaseUser.getUid(), listUserIds, msg);
+                        } else {
+                            Toast.makeText(GroupChatPage.this, "Type in a message", Toast.LENGTH_SHORT).show();
+                        }
+
+                        messageSend.setText("");
+                    }
+                });
                 readMessage(firebaseUser.getUid(), listUserIds);
             }
 
@@ -103,23 +121,6 @@ public class GroupChatPage extends AppCompatActivity {
 
             }
         });
-
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                notify = true;
-                String msg = messageSend.getText().toString();
-                if(!msg.equals("")){
-                    listUserIds.remove(firebaseUser.getUid());
-                    sendMessage(firebaseUser.getUid(), listUserIds, msg);
-                } else {
-                    Toast.makeText(GroupChatPage.this, "Type in a message", Toast.LENGTH_SHORT).show();
-                }
-
-                messageSend.setText("");
-            }
-        });
-        //seenMessage(userId);
     }
 
     private void sendMessage(String sender, final List<String> receivers, String message){
@@ -133,22 +134,6 @@ public class GroupChatPage extends AppCompatActivity {
         hashMap.put("isseen", false);
 
         reference.child("GroupChats").push().setValue(hashMap);
-
-        /*final String msg = message;
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                sendNotification(receiver,user.getUsername(),msg);
-                notify = false;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
     }
 
     private void readMessage(final String myId, final List<String> userIds){
@@ -156,26 +141,21 @@ public class GroupChatPage extends AppCompatActivity {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("GroupChats");
 
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 chat.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     GroupChatInfo groupChatInfo = snapshot.getValue(GroupChatInfo.class);
-                    for (int i = 0; i < groupChatInfo.getReceivers().size() - 1; i++) {
-                        if (groupChatInfo.getReceivers().get(i).equals(myId) && groupChatInfo.getSender().equals(userIds.get(i)) ||
-                            groupChatInfo.getReceivers().get(i).equals(userIds.get(i)) && groupChatInfo.getSender().equals(myId)) {
+                    for (int i = 0; i < groupChatInfo.getReceivers().size(); i++) {
+                        if (groupChatInfo.getReceivers().get(i).equals(myId) && groupChatInfo.getSender().equals(userIds.get(i))) {
 
                             chat.add(groupChatInfo);
                         }
                     }
-
-                    /*if(groupChatInfo.getReceiver().equals(myId) && chatInfo.getSender().equals(userId) ||
-                            chatInfo.getReceiver().equals(userId) && chatInfo.getSender().equals(myId)){
-                        chat.add(chatInfo);
-                    }*/
-
+                    if (groupChatInfo.getSender().equals(myId)) {
+                        chat.add(groupChatInfo);
+                    }
                     groupChatAdapter = new GroupChatAdapter(GroupChatPage.this, chat);
                     recyclerView.setAdapter(groupChatAdapter);
                 }

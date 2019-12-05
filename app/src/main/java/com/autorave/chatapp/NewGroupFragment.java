@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,17 +40,16 @@ public class NewGroupFragment extends Fragment {
 
     private TextView backBtn;
     private TextView nextBtn;
-    private SearchView searchView;
     private RecyclerView recyclerView;
     private GroupContactsAdapter groupContactsAdapter;
     private List<User> mContacts;
-    private List<String> currentSelectedContacts;
-
+    private List<User> currentSelectedContacts;
+    private User user;
+    private String groupContactNames;
 
     public NewGroupFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,21 +65,6 @@ public class NewGroupFragment extends Fragment {
             }
         });
 
-        searchView = view.findViewById(R.id.search_new_group);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                groupContactsAdapter.filter(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                groupContactsAdapter.filter(newText);
-                return false;
-            }
-        });
-
         recyclerView = view.findViewById(R.id.contacts_new_group);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -92,34 +77,67 @@ public class NewGroupFragment extends Fragment {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "" + currentSelectedContacts.size(), Toast.LENGTH_SHORT).show();
+
                 FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-                currentSelectedContacts.add(fbUser.getUid());
 
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("GroupInfo");
-                String groupKey = databaseReference.push().getKey();
+                final HashMap<String, List<User>> hashMap = new HashMap<>();
+                final HashMap<String, Object> hashMap1 = new HashMap<>();
+                final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Groups");
+                final String groupKey = databaseReference.push().getKey();
 
-                HashMap<String, List<String>> hashMap = new HashMap<>();
-                hashMap.put("members", currentSelectedContacts);
-
-                HashMap<String, Object> hashMap1 = new HashMap<>();
-                hashMap1.put("id", groupKey);
-
-                databaseReference.child(groupKey).setValue(hashMap);
-                databaseReference.child(groupKey).updateChildren(hashMap1);
-
-                for (int i = 0; i < currentSelectedContacts.size(); i++) {
-                    DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("Users").child(currentSelectedContacts.get(i)).child("Groups");
-                    databaseReference1.push().setValue(groupKey);
-                }
-
-                Intent intent = new Intent(getContext(), GroupChatPage.class);
-                intent.putExtra("groupId", groupKey);
-                getContext().startActivity(intent);
+                getData();
             }
         });
 
         return view;
+    }
+
+    private void getData() {
+        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(fbUser.getUid());
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                useData(user);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void useData(User user) {
+
+        currentSelectedContacts.add(user);
+        groupContactNames = currentSelectedContacts.get(0).getUsername() + ", ";
+
+        for (int i = 1; i < currentSelectedContacts.size(); i++) {
+            groupContactNames += (currentSelectedContacts.get(i).getUsername() + ", ");
+        }
+
+        HashMap<String, List<User>> hashMap = new HashMap<>();
+        HashMap<String, Object> hashMap1 = new HashMap<>();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Groups");
+        String groupKey = databaseReference.push().getKey();
+
+        hashMap.put("members", currentSelectedContacts);
+        hashMap1.put("id", groupKey);
+        hashMap1.put("name", groupContactNames);
+
+        databaseReference.child(groupKey).setValue(hashMap);
+        databaseReference.child(groupKey).updateChildren(hashMap1);
+
+        for (int i = 0; i < currentSelectedContacts.size(); i++) {
+            DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference("Users").child(currentSelectedContacts.get(i).getId()).child("groups");
+            databaseReference1.push().setValue(groupKey);
+        }
+
+        Intent intent = new Intent(getContext(), GroupChatPage.class);
+        intent.putExtra("groupId", groupKey);
+        getContext().startActivity(intent);
     }
 
     private void getUsers() {
@@ -146,7 +164,7 @@ public class NewGroupFragment extends Fragment {
                 groupContactsAdapter = new GroupContactsAdapter(mContacts, getContext(), new GroupContactsAdapter.OnItemCheckListener() {
                     @Override
                     public void onItemCheck(User user) {
-                        currentSelectedContacts.add(user.getId());
+                        currentSelectedContacts.add(user);
                         if (currentSelectedContacts.size() > 1) {
                             nextBtn.setTextColor(getResources().getColor(R.color.black));
                             nextBtn.setClickable(true);
@@ -158,7 +176,7 @@ public class NewGroupFragment extends Fragment {
 
                     @Override
                     public void onItemUncheck(User user) {
-                        currentSelectedContacts.remove(user.getId());
+                        currentSelectedContacts.remove(user);
                         if (currentSelectedContacts.size() > 1) {
                             nextBtn.setTextColor(getResources().getColor(R.color.black));
                             nextBtn.setClickable(true);

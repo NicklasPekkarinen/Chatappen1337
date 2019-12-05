@@ -1,12 +1,15 @@
 package com.autorave.chatapp.Templates;
 
-    public class User {
+import java.util.List;
+
+public class User {
 
         private String username;
         private String id;
         private String imageURL;
         private String email;
         private String status;
+        //private List<String> groups;
 
         public User() {
             // Default constructor required for calls to DataSnapshot
@@ -18,10 +21,15 @@ package com.autorave.chatapp.Templates;
             this.email = email;
             this.imageURL = imageURL;
             this.status = status;
+            //this.groups = groups;
         }
 
         public String getUsername() {
             return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
         }
 
         public String getId() {
@@ -39,6 +47,10 @@ package com.autorave.chatapp.Templates;
         public String getStatus() {
             return status;
         }
-    }
+
+        /*public List<String> getGroups() {
+            return groups;
+        }*/
+}
 
 

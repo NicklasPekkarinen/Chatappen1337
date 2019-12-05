@@ -61,13 +61,11 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
         for (int i = 0; i < SQLData.size(); i++) {
             if (SQLData != null && SQLData.get(i).equals(user.getId())) {
-                holder.mUserName.setText(SQLData.get(i-1));
+                user.setUsername(SQLData.get(i-1));
             }
         }
 
-        if (holder.mUserName.getText().length() <= 0) {
-            holder.mUserName.setText(user.getUsername());
-        }
+        holder.mUserName.setText(user.getUsername());
 
 
         if (user.getImageURL().equals("default")) {
