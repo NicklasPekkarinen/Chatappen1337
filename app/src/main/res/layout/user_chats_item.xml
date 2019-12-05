@@ -47,5 +47,15 @@
             android:singleLine="true"/>
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/unread_message"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone" />
+
+
 
 </RelativeLayout>

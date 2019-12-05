@@ -118,6 +118,8 @@ public class NewGroupFragment extends Fragment {
             groupContactNames += (currentSelectedContacts.get(i).getUsername() + ", ");
         }
 
+        groupContactNames = groupContactNames.replaceAll(", $", "");
+
         HashMap<String, List<User>> hashMap = new HashMap<>();
         HashMap<String, Object> hashMap1 = new HashMap<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Groups");

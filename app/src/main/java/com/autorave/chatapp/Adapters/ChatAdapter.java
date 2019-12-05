@@ -2,11 +2,14 @@ package com.autorave.chatapp.Adapters;
 
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.net.URL;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,7 +57,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         ChatInfo chatInfo = chat.get(position);
 
-        holder.showMessage.setText(chatInfo.getMessage());
+        if (Patterns.WEB_URL.matcher(chatInfo.getMessage()).matches()) {
+            Glide.with(mContext).load(chatInfo.getMessage()).into(holder.image);
+            holder.image.setVisibility(View.VISIBLE);
+        } else {
+            holder.showMessage.setText(chatInfo.getMessage());
+        }
 
         if(imageUrl.equals("default")){
             holder.profileImage.setImageResource(R.mipmap.ic_launcher);
@@ -85,6 +93,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         public TextView showMessage;
         public ImageView profileImage;
         public TextView msgSeen;
+        public ImageView image;
         //RelativeLayout msgLayout;
 
         public ViewHolder(View itemView) {
@@ -93,6 +102,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             showMessage = itemView.findViewById(R.id.show_message);
             profileImage = itemView.findViewById(R.id.profile_image);
             msgSeen = itemView.findViewById(R.id.message_seen);
+            image = itemView.findViewById(R.id.image);
             //msgLayout = itemView.findViewById(R.id.msg_layout);
         }
     }

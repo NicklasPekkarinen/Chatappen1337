@@ -6,29 +6,37 @@
     android:background="#e6e6e6"
     tools:context=".Activitys.ChatPage">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/groupchat_profile_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@mipmap/ic_launcher" />
-
-    <TextView
-        android:id="@+id/groupchat_username"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/group_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
-        android:layout_toEndOf="@id/groupchat_profile_image"
-        android:text="username"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:padding="5dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/groupchat_profile_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/groupchat_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_toEndOf="@id/groupchat_profile_image"
+            android:layout_centerVertical="true"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/groupchat_id_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/groupchat_message_layout"
-        android:layout_below="@id/groupchat_profile_image" />
+        android:layout_below="@id/group_info" />
 
 
     <RelativeLayout
@@ -55,8 +63,6 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/ic_send_sea_24dp" />
-
-
     </RelativeLayout>
 
 </RelativeLayout>

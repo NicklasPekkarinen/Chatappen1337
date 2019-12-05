@@ -103,9 +103,11 @@ class GroupChatsListAdapter extends RecyclerView.Adapter<GroupChatsListAdapter.V
                     GroupChatInfo chat = snapshot.getValue(GroupChatInfo.class);
 
                     for (int i = 0; i < chat.getReceivers().size(); i++) {
-                        if (chat.getReceivers().get(i).equals(firebaseUser.getUid()) && chat.getSender().equals(groupIds.get(i)) ||
-                                chat.getReceivers().get(i).equals(groupIds.get(i)) && chat.getSender().equals(firebaseUser.getUid())) {
-                            lastMessage = chat.getMessage();
+                        for (int j = 0; j < groupIds.size(); j++) {
+                            if (chat.getReceivers().get(i).equals(firebaseUser.getUid()) && chat.getSender().equals(groupIds.get(j)) ||
+                                chat.getReceivers().get(i).equals(groupIds.get(j)) && chat.getSender().equals(firebaseUser.getUid())) {
+                                lastMessage = chat.getMessage();
+                            }
                         }
                     }
                 }

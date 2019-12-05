@@ -289,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
         switch(menuItem.getItemId()) {
             case R.id.drawer_sign_out:
                 FirebaseAuth.getInstance().signOut();
+                status("offline");
                 startActivity(new Intent(MainActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 break;
         }
@@ -314,10 +315,5 @@ public class MainActivity extends AppCompatActivity implements ChatsFragment.OnF
     protected void onPause() {
         super.onPause();
         status("offline");
-    }
-
-    public void newMessage(View view) {
-        Log.d("Autorave", "hej");
-        getSupportFragmentManager().beginTransaction().replace(R.id.drawer_layout, new NewMessageFragment(), null).commit();
     }
 }
