@@ -81,8 +81,7 @@ import retrofit2.Response;
 public class ChatPage extends AppCompatActivity {
 
     NameChangeDBHelper nameChangeDBHelper;
-    ImageView image_send;
-    ImageView Image_receive;
+
     StorageReference storageReference;
 
     CircleImageView profile_image;
@@ -92,7 +91,6 @@ public class ChatPage extends AppCompatActivity {
     Button camera_button;
     List<ChatInfo> chat;
     RecyclerView recyclerView;
-    ImageView imageView;
     String userId;
     private int REQUEST_PICTURE_CAPTURE = 1;
     Bitmap sentPhotoBitmap;
@@ -100,7 +98,6 @@ public class ChatPage extends AppCompatActivity {
 
     ImageButton btnSend;
     EditText messageSend;
-    private String filepath;
 
     ChatAdapter chatAdapter;
 
@@ -112,9 +109,6 @@ public class ChatPage extends AppCompatActivity {
     private DatabaseReference databaseReference;
     Boolean notify = false;
     APIService apiService;
-
-   private int STORAGE_PERMISSION_CODE = 1;
-   private int CAMERA_PERMISSION_CODE = 10;
 
     private StorageTask uploadTask;
 
@@ -149,16 +143,8 @@ public class ChatPage extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                if(ContextCompat.checkSelfPermission(ChatPage.this,
-                        Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(ChatPage.this,Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED){
+                startCamera();
 
-                    startCamera();
-                }
-                else{
-                    requestStoragePermission();
-                }
             }
         });
 
@@ -223,47 +209,6 @@ public class ChatPage extends AppCompatActivity {
         seenMessage(userId);
 
     }
-    private void requestStoragePermission(){
-        if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-               new AlertDialog.Builder(this)
-                       .setTitle("Storage permission needed")
-                       .setMessage("You need allow this to save your pictures to your phone")
-                       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialogInterface, int i) {
-                                ActivityCompat.requestPermissions(ChatPage.this,new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
-                           }
-                       })
-                       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialogInterface, int i) {
-                               dialogInterface.dismiss();
-                           }
-                       })
-                       .create().show();
-               if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA)){
-                  new AlertDialog.Builder(this)
-                  .setTitle("Camera permission needed")
-                  .setMessage("You need to allow this to save your pictures to your phone")
-                  .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                      @Override
-                      public void onClick(DialogInterface dialogInterface, int i) {
-                          ActivityCompat.requestPermissions(ChatPage.this,new String[] {Manifest.permission.CAMERA},CAMERA_PERMISSION_CODE);
-                      }
-                  })
-                  .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                      @Override
-                      public void onClick(DialogInterface dialogInterface, int i) {
-                          dialogInterface.dismiss();
-                      }
-                  })
-                  .create().show();
-               }
-        }else{
-            ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},CAMERA_PERMISSION_CODE);
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -294,27 +239,6 @@ public class ChatPage extends AppCompatActivity {
         startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
 
     }
-    private File getPictureFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("ddmmyyyyhhmmss", Locale.getDefault()).format(new Date());
-        String pictureFile = "pic_" + timeStamp;
-        File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File storageDir = new File(dir, "child");
-        if (!storageDir.exists()) {
-            if (!storageDir.mkdirs()) {
-
-            }
-        }
-        File image = File.createTempFile( pictureFile, ".jpg", storageDir);
-
-        filepath = image.getAbsolutePath();
-        return image;
-    } //
-
-    private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = ChatPage.this.getContentResolver();
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
 
     private void uploadImage(Bitmap bitmap) {
 
@@ -323,18 +247,6 @@ public class ChatPage extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
 
         final StorageReference fileReference = storageReference.child(System.currentTimeMillis() + ".JPEG");
-
-        /*uploadTask = fileReference.putBytes(byteArrayOutputStream.toByteArray()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(ChatPage.this, "Photo uploaded.", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ChatPage.this, "Photo failed to upload.", Toast.LENGTH_SHORT).show();
-            }
-        });*/
 
         uploadTask = fileReference.putBytes(byteArrayOutputStream.toByteArray());
         uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>> () {
