@@ -55,6 +55,7 @@ public final class NameChangeDBHelper extends SQLiteOpenHelper {
 
             String query = "INSERT INTO nicknameTable (userId, nickname) VALUES ('" + userInfo.get(1) + "','" + userInfo.get(0) + "')";
             mDatabas.execSQL(query);
+            mDatabas.isReadOnly();
         }
 
         //Gets data from database and displays Nickname on specific person in contacts list
