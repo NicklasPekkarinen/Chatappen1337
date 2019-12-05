@@ -1,12 +1,19 @@
 package com.autorave.chatapp.Activitys;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -86,6 +93,9 @@ public class ChatPage extends AppCompatActivity {
     Boolean notify = false;
     APIService apiService;
 
+   private int STORAGE_PERMISSION_CODE = 1;
+   private int CAMERA_PERMISSION_CODE = 10;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +126,16 @@ public class ChatPage extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                startCamera();
+                if(ContextCompat.checkSelfPermission(ChatPage.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(ChatPage.this,Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED){
+
+                    startCamera();
+                }
+                else{
+                    requestStoragePermission();
+                }
             }
         });
 
@@ -163,11 +182,10 @@ public class ChatPage extends AppCompatActivity {
                     Log.d("Autorave", user.getUsername());
                     username.setText(user.getUsername());
                 }
-
                 if(user.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 } else {
-                    Glide.with(ChatPage.this).load(user.getImageURL()).into(profile_image);
+                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
                 }
 
                 readMessage(firebaseUser.getUid(), userId, user.getImageURL());
@@ -181,6 +199,57 @@ public class ChatPage extends AppCompatActivity {
 
         seenMessage(userId);
 
+    }
+    private void requestStoragePermission(){
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+               new AlertDialog.Builder(this)
+                       .setTitle("Storage permission needed")
+                       .setMessage("You need allow this to save your pictures to your phone")
+                       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                                ActivityCompat.requestPermissions(ChatPage.this,new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
+                           }
+                       })
+                       .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.dismiss();
+                           }
+                       })
+                       .create().show();
+               if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.CAMERA)){
+                  new AlertDialog.Builder(this)
+                  .setTitle("Camera permission needed")
+                  .setMessage("You need to allow this to save your pictures to your phone")
+                  .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialogInterface, int i) {
+                          ActivityCompat.requestPermissions(ChatPage.this,new String[] {Manifest.permission.CAMERA},CAMERA_PERMISSION_CODE);
+                      }
+                  })
+                  .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialogInterface, int i) {
+                          dialogInterface.dismiss();
+                      }
+                  })
+                  .create().show();
+               }
+        }else{
+            ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA},CAMERA_PERMISSION_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show();
+             startCamera();
+        }else{
+             Toast.makeText(this,"Permission Denied",Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -259,7 +328,6 @@ public class ChatPage extends AppCompatActivity {
     private File getPictureFile() throws IOException {
         String timeStamp = new SimpleDateFormat("ddmmyyyyhhmmss", Locale.getDefault()).format(new Date());
         String pictureFile = "pic_" + timeStamp;
-
         File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File storageDir = new File(dir, "child");
         if (!storageDir.exists()) {
@@ -296,7 +364,7 @@ public class ChatPage extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(String sender, final String receiver, String message){
+    private void sendMessage(String sender, final String receiver, final String message){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -316,7 +384,7 @@ public class ChatPage extends AppCompatActivity {
                 User user = dataSnapshot.getValue(User.class);
                 if(notify){
                     Log.d("MarcusTag","if notify");
-                sendNotification(receiver,user.getUsername(),msg);
+                    sendNotification(receiver,user.getUsername(),msg);
                 }
                 notify = false;
             }
