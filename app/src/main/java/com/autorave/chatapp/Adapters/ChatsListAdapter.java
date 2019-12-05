@@ -29,6 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.GONE;
+
 public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.ViewHolder> {
 
     NameChangeDBHelper nameChangeDBHelper;
@@ -36,6 +38,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     private List<User> mContacts;
     private String lastMessage;
     public boolean bold = true;
+    DatabaseReference reference;
+    FirebaseUser firebaseUser;
 
     public ChatsListAdapter(List<User> mContacts, Context mContext) {
         this.mContext = mContext;
@@ -51,7 +55,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 
         nameChangeDBHelper = new NameChangeDBHelper(mContext);
 
@@ -82,7 +86,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             holder.mStatus.setVisibility(View.VISIBLE);
             holder.mStatus.setImageResource(R.color.statusOnline);
         } else if (user.getStatus().equals("offline")) {
-            holder.mStatus.setVisibility(View.GONE);
+            holder.mStatus.setVisibility(GONE);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +95,33 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                 Intent intent = new Intent(mContext, ChatPage.class);
                 intent.putExtra("userId", user.getId());
                 mContext.startActivity(intent);
+            }
+        });
+
+        //unread message notification
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    ChatInfo chatInfo = snapshot.getValue(ChatInfo.class);
+
+                    if(chatInfo.getReceiver().equals(firebaseUser.getUid()) &&!chatInfo.isIsseen())
+                    {
+
+                        holder.mUnreadMsg.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.mUnreadMsg.setVisibility(GONE);
+                    }
+                }
+            }
+
+            //user.getId().equals(chatInfo.getReceiver())
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -106,6 +137,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         private ImageView mStatus;
         private TextView mUserName;
         private TextView mLastMsg;
+        private ImageView mUnreadMsg;
 
         public ViewHolder(View itemView) {
 
@@ -114,6 +146,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             mStatus = itemView.findViewById(R.id.status_icon);
             mUserName = itemView.findViewById(R.id.chats_username);
             mLastMsg = itemView.findViewById(R.id.chats_last_message);
+            mUnreadMsg = itemView.findViewById(R.id.unread_message);
         }
     }
 
