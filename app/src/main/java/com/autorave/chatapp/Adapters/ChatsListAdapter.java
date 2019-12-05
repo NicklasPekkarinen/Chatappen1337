@@ -107,7 +107,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     ChatInfo chatInfo = snapshot.getValue(ChatInfo.class);
 
-                    if(chatInfo.getReceiver().equals(firebaseUser.getUid()) &&!chatInfo.isIsseen())
+                    if(chatInfo.getSender().equals(user.getId()) &&!chatInfo.isIsseen())
                     {
 
                         holder.mUnreadMsg.setVisibility(View.VISIBLE);
@@ -116,8 +116,6 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                     }
                 }
             }
-
-            //user.getId().equals(chatInfo.getReceiver())
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
